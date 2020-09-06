@@ -67,7 +67,7 @@ ssize_t readUART(int fd, void *buf, size_t count) {
 }
 
 void askIntData(int uart0_filestream) {
-    unsigned int command[2] = {ASK_INT, '\0'};
+    unsigned char command[2] = {ASK_INT, '\0'};
     unsigned char message[6] = {'4', '1', '2', '1', '\0'};
     int response = -1;
 
@@ -85,7 +85,7 @@ void askIntData(int uart0_filestream) {
 }
 
 void askFloatData(int uart0_filestream) {
-    unsigned int command[2] = {ASK_FLOAT, '\0'};
+    unsigned char command[2] = {ASK_FLOAT, '\0'};
     unsigned char message[6] = {'4', '1', '2', '1', '\0'};
     float response = -1.0f;
 
@@ -103,7 +103,7 @@ void askFloatData(int uart0_filestream) {
 }
 
 void askStringData(int uart0_filestream) {
-    unsigned int command[2] = {ASK_STRING, '\0'};
+    unsigned char command[2] = {ASK_STRING, '\0'};
     unsigned char message[6] = {'4', '1', '2', '1', '\0'};
     unsigned char string_size = -1;
     unsigned char *response;
@@ -170,8 +170,36 @@ void sendFloatData(int uart0_filestream, float typed_float) {
     }
 }
 
-void sendStringData(int uart0_filestream) {
+void sendStringData(int uart0_filestream, char *typed_string) {
+    unsigned char command[2] = {SEND_STRING, '\0'};
+    unsigned char typed_string_size = strlen(typed_string);
+    unsigned char message[6] = {'4', '1', '2', '1', '\0'};
 
+    ssize_t message_size = writeUART(uart0_filestream, &command, strlen((char*)command));
+    if(message_size < 0) return;
+    message_size = writeUART(uart0_filestream, &typed_string_size, sizeof(char));
+    if(message_size < 0) return;
+    message_size = writeUART(uart0_filestream, &typed_string, strlen((char*)typed_string));
+    if(message_size < 0) return;
+    message_size = writeUART(uart0_filestream, &message, strlen((char*)message));
+    if(message_size < 0) return;
+
+    sleep(1);
+
+    unsigned char response_string_size = -1;
+    unsigned char *response;
+
+    ssize_t response_size = readUART(uart0_filestream, &response_string_size, 1);
+    if(response_string_size <= 0) return;
+
+    response = (unsigned char *) malloc((int) response_string_size+1);
+    response_size = readUART(uart0_filestream, (void*) &response[0], response_string_size);
+    if(response_size > 0) {
+        response[response_string_size] = '\0';
+        printf("\nString lida: %s\n", response);
+    }
+
+    free(response);
 }
 
 int displayMenuOptions() {
@@ -213,6 +241,7 @@ int main(int argc, const char * argv[]) {
         char wait[2];
         int typed_int;
         float typed_float;
+        char typed_string[300];
 
         clearOutputs();
         user_choice = displayMenuOptions();
@@ -248,8 +277,10 @@ int main(int argc, const char * argv[]) {
                 close(uart0_filestream);
                 break;
             case 6:
+                printf(">> Digite uma string: ");
+                scanf(" %[^\n]s", typed_string);
                 uart0_filestream = setupUART(uart_path);
-                sendStringData(uart0_filestream);
+                sendStringData(uart0_filestream, typed_string);
                 close(uart0_filestream);
                 break;
             default:
