@@ -12,7 +12,7 @@
 #define SEND_STRING 0xB3
 
 /* Global variables */
-char matricula[] = "4121";
+char matricula[5] = {4, 1, 2, 1, '\0'};
 /* Global variables */
 
 void clearOutputs() {
