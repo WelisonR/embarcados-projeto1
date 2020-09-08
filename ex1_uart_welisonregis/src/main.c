@@ -11,6 +11,10 @@
 #define SEND_FLOAT 0xB2
 #define SEND_STRING 0xB3
 
+/* Global variables */
+char matricula[] = "4121";
+/* Global variables */
+
 void clearOutputs() {
     #if defined _WIN32
         system("cls");
@@ -68,15 +72,15 @@ ssize_t readUART(int fd, void *buf, size_t count) {
 
 void askIntData(int uart0_filestream) {
     unsigned char command[2] = {ASK_INT, '\0'};
-    unsigned char message[6] = {'4', '1', '2', '1', '\0'};
-    int response = -1;
 
-    ssize_t message_size = writeUART(uart0_filestream, &command, strlen((char*)command));
+    ssize_t message_size = writeUART(uart0_filestream, &command[0], strlen((char*)command));
     if(message_size < 0) return;
-    message_size = writeUART(uart0_filestream, &message, strlen((char*)message));
+    message_size = writeUART(uart0_filestream, &matricula[0], strlen(matricula));
     if(message_size < 0) return;
 
     sleep(1);
+
+    int response = -1;
 
     ssize_t response_size = readUART(uart0_filestream, (void*) &response, sizeof(int));
     if(response_size > 0) {
@@ -86,15 +90,15 @@ void askIntData(int uart0_filestream) {
 
 void askFloatData(int uart0_filestream) {
     unsigned char command[2] = {ASK_FLOAT, '\0'};
-    unsigned char message[6] = {'4', '1', '2', '1', '\0'};
-    float response = -1.0f;
 
-    ssize_t message_size = writeUART(uart0_filestream, &command, strlen((char*)command));
+    ssize_t message_size = writeUART(uart0_filestream, &command[0], strlen((char*)command));
     if(message_size < 0) return;
-    message_size = writeUART(uart0_filestream, &message, strlen((char*)message));
+    message_size = writeUART(uart0_filestream, &matricula[0], strlen(matricula));
     if(message_size < 0) return;
 
     sleep(1);
+
+    float response = -1.0f;
 
     ssize_t response_size = readUART(uart0_filestream, (void*) &response, sizeof(float));
     if(response_size > 0) {
@@ -104,21 +108,20 @@ void askFloatData(int uart0_filestream) {
 
 void askStringData(int uart0_filestream) {
     unsigned char command[2] = {ASK_STRING, '\0'};
-    unsigned char message[6] = {'4', '1', '2', '1', '\0'};
     unsigned char string_size = -1;
-    unsigned char *response;
 
-    ssize_t message_size = writeUART(uart0_filestream, &command, strlen((char*)command));
+    ssize_t message_size = writeUART(uart0_filestream, &command[0], strlen((char*)command));
     if(message_size < 0) return;
-    message_size = writeUART(uart0_filestream, &message, strlen((char*)message));
+    message_size = writeUART(uart0_filestream, &matricula[0], strlen(matricula));
     if(message_size < 0) return;
 
     sleep(1);
 
-    ssize_t response_size = readUART(uart0_filestream, &string_size, 1);
+    ssize_t response_size = readUART(uart0_filestream, &string_size, sizeof(unsigned char));
     if(string_size <= 0) return;
 
-    response = (unsigned char *) malloc((int) string_size+1);
+    char *response = (char *) malloc((int) string_size+1);
+
     response_size = readUART(uart0_filestream, (void*) &response[0], string_size);
     if(response_size > 0) {
         response[string_size] = '\0';
@@ -130,18 +133,17 @@ void askStringData(int uart0_filestream) {
 
 void sendIntData(int uart0_filestream, int typed_int) {
     unsigned char command[2] = {SEND_INT, '\0'};
-    unsigned char message[5] = {'4', '1', '2', '1', '\0'};
 
-    int response = -1;
-
-    ssize_t message_size = writeUART(uart0_filestream, &command, strlen((char*)command));
+    ssize_t message_size = writeUART(uart0_filestream, &command[0], strlen((char*)command));
     if(message_size < 0) return;
     message_size = writeUART(uart0_filestream, &typed_int, sizeof(int));
     if(message_size < 0) return;
-    message_size = writeUART(uart0_filestream, &message, strlen((char*)message));
+    message_size = writeUART(uart0_filestream, &matricula[0], strlen(matricula));
     if(message_size < 0) return;
 
     sleep(1);
+
+    int response = -1;
 
     ssize_t response_size = readUART(uart0_filestream, (void*) &response, sizeof(int));
     if(response_size > 0) {
@@ -151,18 +153,17 @@ void sendIntData(int uart0_filestream, int typed_int) {
 
 void sendFloatData(int uart0_filestream, float typed_float) {
     unsigned char command[2] = {SEND_FLOAT, '\0'};
-    unsigned char message[5] = {'4', '1', '2', '1', '\0'};
 
-    float response = -1.0f;
-
-    ssize_t message_size = writeUART(uart0_filestream, &command, strlen((char*)command));
+    ssize_t message_size = writeUART(uart0_filestream, &command[0], strlen((char*)command));
     if(message_size < 0) return;
     message_size = writeUART(uart0_filestream, &typed_float, sizeof(float));
     if(message_size < 0) return;
-    message_size = writeUART(uart0_filestream, &message, strlen((char*)message));
+    message_size = writeUART(uart0_filestream, &matricula[0], strlen(matricula));
     if(message_size < 0) return;
 
     sleep(1);
+
+    float response = -1.0f;
 
     ssize_t response_size = readUART(uart0_filestream, (void*) &response, sizeof(float));
     if(response_size > 0) {
@@ -173,26 +174,25 @@ void sendFloatData(int uart0_filestream, float typed_float) {
 void sendStringData(int uart0_filestream, char *typed_string) {
     unsigned char command[2] = {SEND_STRING, '\0'};
     unsigned char typed_string_size = strlen(typed_string);
-    unsigned char message[6] = {'4', '1', '2', '1', '\0'};
 
-    ssize_t message_size = writeUART(uart0_filestream, &command, strlen((char*)command));
+    ssize_t message_size = writeUART(uart0_filestream, &command[0], strlen((char*)command));
     if(message_size < 0) return;
-    message_size = writeUART(uart0_filestream, &typed_string_size, sizeof(char));
+    message_size = writeUART(uart0_filestream, &typed_string_size, sizeof(unsigned char));
     if(message_size < 0) return;
-    message_size = writeUART(uart0_filestream, &typed_string, strlen((char*)typed_string));
+    message_size = writeUART(uart0_filestream, &typed_string[0], strlen((char*)typed_string));
     if(message_size < 0) return;
-    message_size = writeUART(uart0_filestream, &message, strlen((char*)message));
+    message_size = writeUART(uart0_filestream, &matricula[0], strlen(matricula));
     if(message_size < 0) return;
 
     sleep(1);
 
     unsigned char response_string_size = -1;
-    unsigned char *response;
 
-    ssize_t response_size = readUART(uart0_filestream, &response_string_size, 1);
+    ssize_t response_size = readUART(uart0_filestream, &response_string_size, sizeof(unsigned char));
     if(response_string_size <= 0) return;
 
-    response = (unsigned char *) malloc((int) response_string_size+1);
+    char *response = (char *) malloc((int) (response_string_size+1));
+
     response_size = readUART(uart0_filestream, (void*) &response[0], response_string_size);
     if(response_size > 0) {
         response[response_string_size] = '\0';
