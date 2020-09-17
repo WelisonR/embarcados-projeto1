@@ -24,8 +24,8 @@ while True:
     print(f"Umidade: {humidity:.2f} %")
     print(f"Pressão atmosférica: {pressure:.2f} hPa", end="\n\n")
 
-    tempereture_humidity_str = f"T {temperature:.2f} U {humidity:.2f}"
-    pressure_str = f"P {pressure:.2f}"
+    tempereture_humidity_str = f"Welison T {temperature:.2f}"
+    pressure_str = f"U {humidity:.2f} P {pressure:.2f}"
 
     # Display data in 2x16 LCD
     mylcd.lcd_display_string(tempereture_humidity_str, 1)
