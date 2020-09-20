@@ -241,6 +241,8 @@
 #define BME280_SOFT_RESET_COMMAND                 (0xB6)
 #define BME280_STATUS_IM_UPDATE                   (0x01)
 
+#define SENSOR_DATA_MEAN_SIZE                     (0x0A)
+
 /*!
  * @brief Interface selection Enums
  */
