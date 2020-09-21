@@ -2,13 +2,20 @@
 
 Neste trabalho utilizou-se do protocolo de comunicação I2C com a linguagem Python para comunicar a placa Raspberry Pi com dois dispositivos externos: um Sensor de Pressão, Umidade e Temperatura modelo BME280 e um Display LCD de 16x2 caracteres.
 
+*   Maiores informações sobre os requisitos do exercício podem ser encontradas no arquivo PDF [exercicio_2_I2C_enunciado](https://github.com/WelisonR/embarcados/blob/master/entregas/ex2_bme280_welisonregis/exercicio_2_I2C_enunciado.pdf) na pasta principal do projeto.
+
 ## Execução
 
 Para executar o projeto, prossiga:
 
-1. Na pasta com o código python (`/python`), digite: `python3 main.py`.
+1. Na pasta principal com o código em Python, digite o comando:
 
-*   Para interromper a execução, proceder com `CTRL+C`.
+```
+python3 main.py
+```
+
+Observações:
+*   Para interromper a execução, proceda com `CTRL+C`.
 
 ## Autor
 
