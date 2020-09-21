@@ -277,7 +277,7 @@ void save_sensor_data(struct bme280_data *sensor_data) {
     sensor_data->pressure = pressure;
     sensor_data->humidity = humidity;
 
-    printf("%0.1lf deg C, %0.1lf hPa, %0.1lf%%\n", 
+    printf("%0.2lf °C, %0.2lf hPa, %0.2f%%\n", 
         sensor_data->temperature, sensor_data->pressure, sensor_data->humidity);
 }
 
@@ -285,9 +285,16 @@ void save_sensor_data(struct bme280_data *sensor_data) {
  * @brief This API used to store in csv file the sensor temperature, pressure and humidity mean.
  */
 void store_sensor_data_mean(struct bme280_data *sensor_data, int n) {
-    FILE *fp = fopen("./data/data_track.csv","a+");
+    char filepath[] = "./data/data_track.csv";
+    FILE *fp = fopen(filepath,"a+");
     fseek (fp, 0, SEEK_END);
     
+    /* If file is not defined, return */
+    if(fp == NULL) {
+        printf(">> Não foi possível salvar a média dos dados medidos.\n");
+        return;
+    }
+
     /* Add header if file is empty */
     if(ftell(fp) == 0) {
         fprintf(fp, "Temperatura (°C), Pressão (hPa), Umidade (%%)\n");
@@ -310,8 +317,10 @@ void store_sensor_data_mean(struct bme280_data *sensor_data, int n) {
     sensor_data_mean.humidity /= (float) n;
 
     /* Store data mean rounded with one decimal place */
-    fprintf(fp, "%0.1lf, %0.1lf, %0.1lf\n",
+    fprintf(fp, "%0.2lf, %0.2lf, %0.2lf\n",
         sensor_data_mean.temperature, sensor_data_mean.pressure, sensor_data_mean.humidity);
+
+    printf(">> Média dos dados salvo em %s.\n", filepath);
 
     fclose(fp);
 }
