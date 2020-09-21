@@ -241,8 +241,9 @@ int8_t stream_sensor_data_forced_mode(struct bme280_dev *dev)
 
         /* Wait for the measurement to complete and print data */
         dev->delay_us(req_delay, dev->intf_ptr);
-        /* sleep 1 second to get the correct data */
+        /* sleep 1 second to give space between measures */
         sleep(1);
+
         rslt = bme280_get_sensor_data(BME280_ALL, &sensor_data[it], dev);
         if (rslt != BME280_OK)
         {
@@ -253,7 +254,7 @@ int8_t stream_sensor_data_forced_mode(struct bme280_dev *dev)
         /* Store one measure from sensor to array */
         save_sensor_data(&sensor_data[it]);
 
-        /* Store the mean of the data in  a csv file every 10 seconds */
+        /* Store the mean of the data in a csv file every 10 seconds */
         if(it == SENSOR_DATA_MEAN_SIZE-1) {
             store_sensor_data_mean(sensor_data, SENSOR_DATA_MEAN_SIZE);
         }
