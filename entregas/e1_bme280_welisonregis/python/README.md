@@ -7,3 +7,10 @@ Neste trabalho utilizou-se do protocolo de comunicação I2C com a linguagem Pyt
 Para executar o projeto, prossiga:
 
 1. Na pasta com o código python (`/python`), digite: `python3 main.py`.
+
+*   Para interromper a execução, proceder com `CTRL+C`.
+
+## Autor
+
+*   Estudante: Welison Lucas Almeida Regis.
+*   Matrícula: 17/0024121.
