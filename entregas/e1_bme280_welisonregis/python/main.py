@@ -20,7 +20,7 @@ while True:
     humidity = round(data.humidity, 2)
     pressure = round(data.pressure, 2)
     
-    print(f"{temperature:.2f} °C, {humidity:.2f} hPa, {pressure:.2f} %", end="\n\n")
+    print(f"{temperature:.2f} °C, {humidity:.2f} hPa, {pressure:.2f} %")
 
     tempereture_humidity_str = f"T {temperature:.2f}"
     pressure_str = f"U {humidity:.2f} P {pressure:.2f}"
