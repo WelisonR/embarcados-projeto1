@@ -50,6 +50,7 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <fcntl.h>
+#include <time.h>
 
 /******************************************************************************/
 /*!                         Own header files                                  */
@@ -85,7 +86,7 @@ void user_delay_us(uint32_t period, void *intf_ptr);
 /*!
  * @brief Function for saving the temperature, humidity and pressure data.
  *
- * @param[out] comp_data    :   Structure instance of bme280_data
+ * @param[in, out] sensor_data    :   Structure instance of bme280_data
  *
  * @note Sensor data whose can be read
  *
@@ -96,12 +97,32 @@ void user_delay_us(uint32_t period, void *intf_ptr);
  * Humidity
  *
  */
-void save_sensor_data(struct bme280_data *comp_data);
+void save_sensor_data(struct bme280_data *sensor_data);
+
+
+/*!
+ * @brief This API used to save the current date (DD-MM-YYYY) into a string.
+ *
+ * @param[in, out] formatted_date    :   string with formatted hour.
+ *
+ */
+void set_current_formatted_date(char *formatted_date);
+
+
+/*!
+ * @brief This API used to save the current hour (HH:MM:SS) into a string.
+ *
+ * @param[in, out] fomatted_hour    :   string with formatted hour.
+ *
+ */
+void set_current_formatted_hour(char *formatted_hour);
 
 /*!
  * @brief Function used to store in csv file the sensor temperature, pressure and humidity mean.
  *
- * @param[out] comp_data    :   Structure instance of bme280_data
+ * @param[in] sensor_data[]    :   Structure instance of bme280_data
+ * @param[in] n                :   Size to base the mean value.
+ * @param[out] csv file        :   Store data about measure into a csv file.
  *
  * @note Sensor data whose can be read
  *
