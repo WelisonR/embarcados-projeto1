@@ -9,4 +9,4 @@ Para executar o projeto, prossiga:
 1. Na pasta com o código C (`/c`), digite: `make`.
 2. Em `/c`, execute o código: `bin/bin /dev/i2c-1`.
 
-*   A cada dez medidas realizadas, será armazenada em um arquivo csv em `/data` a média da temperatura, pressão e umidade.
+*   A cada dez medidas realizadas, será armazenada em um arquivo csv em `/data` a média da temperatura, pressão e umidade, além da data e da hora da medição.
