@@ -12,6 +12,8 @@ address = 0x76
 bus = smbus2.SMBus(i2c_port)
 bme280_parameters = bme280.load_calibration_params(bus, address)
 
+print("Temperature, Pressure, Humidity")
+
 while True:
     # bme280 sensor data
     data = bme280.sample(bus, address, bme280_parameters)
@@ -20,12 +22,12 @@ while True:
     humidity = round(data.humidity, 2)
     pressure = round(data.pressure, 2)
     
-    print(f"{temperature:.2f} °C, {humidity:.2f} hPa, {pressure:.2f} %")
+    print(f"{temperature:.2f} °C, {pressure:.2f} hPa, {humidity:.2f} %")
 
     tempereture_humidity_str = f"T {temperature:.2f}"
     pressure_str = f"U {humidity:.2f} P {pressure:.2f}"
 
-    # Display data in 2x16 LCD
+    # Display data in 16x2 LCD
     mylcd.lcd_display_string(tempereture_humidity_str, 1)
     mylcd.lcd_display_string(pressure_str, 2)
 
