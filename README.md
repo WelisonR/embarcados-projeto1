@@ -1,10 +1,31 @@
-# Fundamentos de Sistemas Embarcados
+# Fundamentos de Sistemas Embarcados - Exercício 2
 
-Repositório destinado a armazenar códigos desenvolvidos no contexto da disciplina de Fundamentos de Sistemas Embarcados (FSE), ministrada na Universidade de Brasília, Faculdade do Gama.
+Repositório destinado a armazenar os códigos desenvolvidos no exercício 2 de Fundamentos de Sistemas Embarcados.
 
-## Projetos disponíveis
+*   Maiores informações sobre os requisitos do exercício podem ser encontradas no arquivo PDF [exercicio_2_I2C_enunciado](https://github.com/WelisonR/embarcados-ex2/blob/master/ex2_bme280_welisonregis/exercicio_2_I2C_enunciado.pdf) na pasta `ex2_bme280_welisonregis` do projeto.
 
-1. [Exercício 1 - Leitura e escrita de dados através de UART (Universal asynchronous receiver/transmitter)](https://github.com/WelisonR/embarcados/tree/master/entregas/ex1_uart_welisonregis).
-2. [Exercício 2 - Comunicação I2C e integração com sensor bme280 e display LCD](https://github.com/WelisonR/embarcados/tree/master/entregas/ex2_bme280_welisonregis).
+## Implementações desenvolvidas
 
-*   Verificar na pasta do projeto maiores informações através do arquivo `README.md` ou do PDF com o enunciado do próprio exercício.
+1. [Código Python](https://github.com/WelisonR/embarcados-ex2/blob/master/ex2_bme280_welisonregis/python/README.md) que manipula o sensor BME280 e aprensenta os resultados em visor LCD.
+2. [Código C](https://github.com/WelisonR/embarcados-ex2/blob/master/ex2_bme280_welisonregis/c/README.md) que manipula o sensor BME280 e explora os dados aferidos do aparelho.
+
+*   Verificar na pasta específica (c ou python) maiores informações sobre o problema e a solução através do arquivo `README.md` ou do PDF com o enunciado do próprio exercício.
+
+## Execução
+
+Para executar os códigos, siga os passos abaixo:
+
+1. Clone o repositório:
+
+```
+git clone https://github.com/WelisonR/embarcados-ex2.git
+```
+
+2. Execute o passo a passo específico para cada código-fonte.
+   1. [Código Python](https://github.com/WelisonR/embarcados-ex2/blob/master/ex2_bme280_welisonregis/python/README.md).
+   2. [Código C](https://github.com/WelisonR/embarcados-ex2/blob/master/ex2_bme280_welisonregis/c/README.md).
+
+# Autor
+
+*   **Estudante**: Welison Lucas Almeida Regis
+*   **Matrícula**: 17/0024121

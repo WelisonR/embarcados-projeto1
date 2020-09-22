@@ -8,16 +8,20 @@ Neste trabalho utilizou-se do protocolo de comunicação I2C com a linguagem Pyt
 
 Para executar o projeto, prossiga:
 
-1. Na pasta principal com o código em Python, digite o comando:
+1. Na pasta principal com o código em linguagem Python (`/python`), digite o comando:
 
 ```
 python3 main.py
 ```
+
+Comportamento esperado:
+*   Leitura de temperatura, pressão e umidade.
+*   Apresentação de temperatura, pressão e umidade no visor LCD.
 
 Observações:
 *   Para interromper a execução, proceda com `CTRL+C`.
 
 ## Autor
 
-*   Estudante: Welison Lucas Almeida Regis.
-*   Matrícula: 17/0024121.
+*   **Estudante**: Welison Lucas Almeida Regis.
+*   **Matrícula**: 17/0024121.
