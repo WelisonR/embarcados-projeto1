@@ -30,7 +30,7 @@
 * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 * POSSIBILITY OF SUCH DAMAGE.
 *
-* @file       bme280_api.h (Minor changes and adds by WelisonR)
+* @file       bme280_api.h (Minor changes, adds and improvements by WelisonR)
 * @date       2020-09-20
 * @version    v3.5.1
 *

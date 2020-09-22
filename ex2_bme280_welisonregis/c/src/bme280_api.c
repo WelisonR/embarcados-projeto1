@@ -4,25 +4,17 @@
  * SPDX-License-Identifier: BSD-3-Clause
  **/
 
-/**
- * \ingroup bme280
- * \defgroup bme280Examples Examples
- * @brief Reference Examples
- */
-
-/*!
- * @ingroup bme280Examples
- * @defgroup bme280GroupExampleLU linux_userspace
- * @brief Linux userspace test code, simple and mose code directly from the doco.
- * compile like this: gcc linux_userspace.c ../bme280.c -I ../ -o bme280
- * tested: Raspberry Pi.
- * Use like: ./bme280 /dev/i2c-0
- * \include linux_userspace.c
- */
-
 /*! @file bme280_api.c
  * @brief Sensor API for BME280 sensor
  */
+
+/*!
+ * Minor changes, adds and improvements by WelisonR.
+ * @file       bme280_api.c
+ * @date       2020-09-22
+ * @version    v3.5.1
+ */
+
 #include "bme280_api.h"
 
 /*!
