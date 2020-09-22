@@ -1,26 +1,31 @@
-# requires RPi_I2C_driver.py
-import RPi_I2C_driver
 from time import *
+
+# Requires RPi_I2C_driver.py
+import RPi_I2C_driver
 import smbus2
 import bme280
 
+# Algorithm constants
+BME_I2C_PORT = 1
+BME_I2C_ADDRESS = 0x76
+
+# Setup LCD display
 mylcd = RPi_I2C_driver.lcd()
 
-# bme280 device settings
-i2c_port = 1
-address = 0x76 
+# Setup bme280 device settings
+i2c_port = BME_I2C_PORT
+address = BME_I2C_ADDRESS 
 bus = smbus2.SMBus(i2c_port)
 bme280_parameters = bme280.load_calibration_params(bus, address)
 
 print("Temperature, Pressure, Humidity")
 
 while True:
-    # bme280 sensor data
+    # Retrieve bme280 sensor data
     data = bme280.sample(bus, address, bme280_parameters)
-
-    temperature  = round(data.temperature, 2)
-    humidity = round(data.humidity, 2)
-    pressure = round(data.pressure, 2)
+    temperature = data.temperature
+    humidity = data.humidity
+    pressure = data.pressure
     
     print(f"{temperature:.2f} °C, {pressure:.2f} hPa, {humidity:.2f} %")
 

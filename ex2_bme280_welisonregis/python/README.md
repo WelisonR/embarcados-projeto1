@@ -14,12 +14,13 @@ Para executar o projeto, prossiga:
 python3 main.py
 ```
 
-Comportamento esperado:
-*   Leitura de temperatura, pressão e umidade.
-*   Apresentação de temperatura, pressão e umidade no visor LCD.
-
 Observações:
 *   Para interromper a execução, proceda com `CTRL+C`.
+*   Caso requerido, instale os pacotes pip utilizados no projeto.
+
+## Comportamento esperado
+*   Leitura de temperatura, pressão e umidade;
+*   Apresentação de temperatura, pressão e umidade no visor LCD.
 
 ## Autor
 
