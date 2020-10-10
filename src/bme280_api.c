@@ -94,72 +94,6 @@ void save_sensor_data(struct bme280_data *sensor_data) {
 }
 
 /*!
- * @brief This API used to save the current date (DD-MM-YYYY) into a string.
- */
-void set_current_formatted_date(char *formatted_date) {
-    time_t rawtime;
-    struct tm * timeinfo;
-
-    time(&rawtime);
-    timeinfo = localtime(&rawtime);
-
-    sprintf(formatted_date, "%02d-%02d-%04d",
-        timeinfo->tm_mday, timeinfo->tm_mon+1, 1900+timeinfo->tm_year);
-}
-
-/*!
- * @brief This API used to save the current hour (HH:MM:SS) into a string.
- */
-void set_current_formatted_hour(char *formatted_hour) {
-    time_t rawtime;
-    struct tm * timeinfo;
-
-    time(&rawtime);
-    timeinfo = localtime(&rawtime);
-
-    sprintf(formatted_hour, "%02d:%02d:%02d",
-        timeinfo->tm_hour, timeinfo->tm_min, timeinfo->tm_sec);
-}
-
-/* TODO: estrutura para salvar as três temperaturas (TE, TI, TR) */
-/*!
- * @brief This API used to store in csv file the sensor temperature and datetime.
- */
-void store_temperature_data(struct bme280_data *sensor_data) {
-    char filepath[] = "data/temperature_track.csv";
-    FILE *fp = fopen(filepath,"a+");
-    fseek (fp, 0, SEEK_END);
-    
-    /* If file is not defined, return */
-    if(fp == NULL) {
-        printf(">> Não foi possível salvar a média dos dados medidos.\n");
-        return;
-    }
-
-    /* Add header if file is empty */
-    if(ftell(fp) == 0) {
-        fprintf(fp, "Data e Hora (DD-MM-YYYY HH:MM:SS),TI (°C)\n");
-    }
-
-    /* Recover data as DD-MM-YYYY */
-    const int date_size = 11;
-    char formatted_date[date_size];
-    set_current_formatted_date(formatted_date);
-
-    /* Recover current hour as HH:MM:SS */
-    const int hour_size = 9;
-    char formatted_hour[hour_size];
-    set_current_formatted_hour(formatted_hour);
-
-    /* Store external temperature and datetime of the measurement */
-    fprintf(fp, "%s %s,%0.2lf\n",
-        formatted_date, formatted_hour, sensor_data->temperature);
-
-    printf(">> Média dos dados salvo em %s.\n", filepath);
-    fclose(fp);
-}
-
-/*!
  * @brief This API reads the sensor temperature, pressure and humidity data in forced mode.
  */
 int8_t stream_sensor_data_forced_mode(struct bme280_dev *device)
@@ -224,9 +158,6 @@ int8_t stream_sensor_data_forced_mode(struct bme280_dev *device)
 
         /* Store one measure from sensor */
         save_sensor_data(&sensor_data);
-
-        /* Save into csv file the measured temperature */
-        store_temperature_data(&sensor_data);
     }
 
     return device_response;
