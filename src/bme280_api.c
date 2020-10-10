@@ -90,8 +90,7 @@ void save_sensor_data(struct bme280_data *sensor_data) {
     sensor_data->pressure = pressure;
     sensor_data->humidity = humidity;
 
-    printf("%0.2lf °C, %0.2lf hPa, %0.2f%%\n", 
-        sensor_data->temperature, sensor_data->pressure, sensor_data->humidity);
+    printf("%0.2lf °C\n", sensor_data->temperature);
 }
 
 /*!
@@ -122,11 +121,12 @@ void set_current_formatted_hour(char *formatted_hour) {
         timeinfo->tm_hour, timeinfo->tm_min, timeinfo->tm_sec);
 }
 
+/* TODO: estrutura para salvar as três temperaturas (TE, TI, TR) */
 /*!
- * @brief This API used to store in csv file the sensor temperature, pressure and humidity mean.
+ * @brief This API used to store in csv file the sensor temperature and datetime.
  */
-void store_sensor_data_mean(struct bme280_data *sensor_data, int n) {
-    char filepath[] = "data/data_track.csv";
+void store_temperature_data(struct bme280_data *sensor_data) {
+    char filepath[] = "data/temperature_track.csv";
     FILE *fp = fopen(filepath,"a+");
     fseek (fp, 0, SEEK_END);
     
@@ -138,40 +138,22 @@ void store_sensor_data_mean(struct bme280_data *sensor_data, int n) {
 
     /* Add header if file is empty */
     if(ftell(fp) == 0) {
-        fprintf(fp, "Temperatura (°C),Pressão (hPa),Umidade (%%),Data (DD-MM-YYYY),Hora (HH:MM:SS)\n");
+        fprintf(fp, "Data e Hora (DD-MM-YYYY HH:MM:SS),TI (°C)\n");
     }
 
-    /* Data structure to store temperature, pressure and humidity mean */
-    struct bme280_data sensor_data_mean;
-    sensor_data_mean.temperature = 0.0;
-    sensor_data_mean.pressure = 0.0;
-    sensor_data_mean.humidity = 0.0;
-
-    /* Compute the data mean over n samples */
-    for (int i = 0; i < n; i++) {
-        sensor_data_mean.temperature += sensor_data[i].temperature;
-        sensor_data_mean.pressure += sensor_data[i].pressure;
-        sensor_data_mean.humidity += sensor_data[i].humidity;
-    }
-    sensor_data_mean.temperature /= (float) n;
-    sensor_data_mean.pressure /= (float) n;
-    sensor_data_mean.humidity /= (float) n;
-
-    /* Store data mean rounded with one decimal place */
-    fprintf(fp, "%0.2lf,%0.2lf,%0.2lf",
-        sensor_data_mean.temperature, sensor_data_mean.pressure, sensor_data_mean.humidity);
-
-    /* Store data as DD-MM-YYYY */
+    /* Recover data as DD-MM-YYYY */
     const int date_size = 11;
     char formatted_date[date_size];
     set_current_formatted_date(formatted_date);
-    fprintf(fp, ",%s", formatted_date);
 
-    /* Store current hour as HH:MM:SS */
+    /* Recover current hour as HH:MM:SS */
     const int hour_size = 9;
     char formatted_hour[hour_size];
     set_current_formatted_hour(formatted_hour);
-    fprintf(fp, ",%s\n", formatted_hour);
+
+    /* Store external temperature and datetime of the measurement */
+    fprintf(fp, "%s %s,%0.2lf\n",
+        formatted_date, formatted_hour, sensor_data->temperature);
 
     printf(">> Média dos dados salvo em %s.\n", filepath);
     fclose(fp);
@@ -180,7 +162,7 @@ void store_sensor_data_mean(struct bme280_data *sensor_data, int n) {
 /*!
  * @brief This API reads the sensor temperature, pressure and humidity data in forced mode.
  */
-int8_t stream_sensor_data_forced_mode(struct bme280_dev *dev)
+int8_t stream_sensor_data_forced_mode(struct bme280_dev *device)
 {
     /* Variable to define the result */
     int8_t device_response = BME280_OK;
@@ -192,15 +174,15 @@ int8_t stream_sensor_data_forced_mode(struct bme280_dev *dev)
     uint32_t req_delay;
 
     /* Recommended mode of operation: Indoor navigation */
-    dev->settings.osr_h = BME280_OVERSAMPLING_1X;
-    dev->settings.osr_p = BME280_OVERSAMPLING_16X;
-    dev->settings.osr_t = BME280_OVERSAMPLING_2X;
-    dev->settings.filter = BME280_FILTER_COEFF_16;
+    device->settings.osr_h = BME280_OVERSAMPLING_1X;
+    device->settings.osr_p = BME280_OVERSAMPLING_16X;
+    device->settings.osr_t = BME280_OVERSAMPLING_2X;
+    device->settings.filter = BME280_FILTER_COEFF_16;
 
     settings_sel = BME280_OSR_PRESS_SEL | BME280_OSR_TEMP_SEL | BME280_OSR_HUM_SEL | BME280_FILTER_SEL;
 
     /* Set the sensor settings */
-    device_response = bme280_set_sensor_settings(settings_sel, dev);
+    device_response = bme280_set_sensor_settings(settings_sel, device);
     if (device_response != BME280_OK)
     {
         fprintf(stderr, "Failed to set sensor settings (code %+d).", device_response);
@@ -208,23 +190,20 @@ int8_t stream_sensor_data_forced_mode(struct bme280_dev *dev)
         return device_response;
     }
 
-    printf("Temperature, Pressure, Humidity\n");
+    printf("TE\n");
 
     /*Calculate the minimum delay required between consecutive measurement based upon the sensor enabled
      *  and the oversampling configuration. */
-    req_delay = bme280_cal_meas_delay(&dev->settings);
+    req_delay = bme280_cal_meas_delay(&device->settings);
 
     /* Structure to get the pressure, temperature and humidity values */
-    struct bme280_data sensor_data[SENSOR_DATA_MEAN_SIZE];
-
-    /* Iterator to track the mean every SENSOR_DATA_MEAN_SIZE seconds */
-    int it = 0;
+    struct bme280_data sensor_data;
 
     /* Continuously stream sensor data */
     while (1)
     {
         /* Set the sensor to forced mode */
-        device_response = bme280_set_sensor_mode(BME280_FORCED_MODE, dev);
+        device_response = bme280_set_sensor_mode(BME280_FORCED_MODE, device);
         if (device_response != BME280_OK)
         {
             fprintf(stderr, "Failed to set sensor mode (code %+d).", device_response);
@@ -232,26 +211,22 @@ int8_t stream_sensor_data_forced_mode(struct bme280_dev *dev)
         }
 
         /* Wait for the measurement to complete and print data */
-        dev->delay_us(req_delay, dev->intf_ptr);
+        device->delay_us(req_delay, device->intf_ptr);
         /* sleep 1 second to give space between measures */
         sleep(1);
 
-        device_response = bme280_get_sensor_data(BME280_ALL, &sensor_data[it], dev);
+        device_response = bme280_get_sensor_data(BME280_ALL, &sensor_data, device);
         if (device_response != BME280_OK)
         {
             fprintf(stderr, "Failed to get sensor data (code %+d).", device_response);
             break;
         }
 
-        /* Store one measure from sensor to array */
-        save_sensor_data(&sensor_data[it]);
+        /* Store one measure from sensor */
+        save_sensor_data(&sensor_data);
 
-        /* Store the mean of the data in a csv file every 10 seconds */
-        if(it == SENSOR_DATA_MEAN_SIZE-1) {
-            store_sensor_data_mean(sensor_data, SENSOR_DATA_MEAN_SIZE);
-        }
-
-        it = (it+1)%SENSOR_DATA_MEAN_SIZE;
+        /* Save into csv file the measured temperature */
+        store_temperature_data(&sensor_data);
     }
 
     return device_response;

@@ -243,7 +243,6 @@
 #define BME280_STATUS_IM_UPDATE                   (0x01)
 
 #define I2C_PATH                                  "/dev/i2c-1"
-#define SENSOR_DATA_MEAN_SIZE                     (0x0A)
 
 /*!
  * @brief Interface selection Enums

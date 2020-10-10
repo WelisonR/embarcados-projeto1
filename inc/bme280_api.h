@@ -118,10 +118,9 @@ void set_current_formatted_date(char *formatted_date);
 void set_current_formatted_hour(char *formatted_hour);
 
 /*!
- * @brief Function used to store in csv file the sensor temperature, pressure and humidity mean.
+ * @brief Function used to store in csv file the measured temperature.
  *
  * @param[in] sensor_data[]    :   Structure instance of bme280_data
- * @param[in] n                :   Size to base the mean value.
  * @param[out] csv file        :   Store data about measure into a csv file.
  *
  * @note Sensor data whose can be read
@@ -133,7 +132,7 @@ void set_current_formatted_hour(char *formatted_hour);
  * Humidity
  *
  */
-void store_sensor_data_mean(struct bme280_data *sensor_data, int n);
+void store_temperature_data(struct bme280_data *sensor_data);
 
 /*!
  *  @brief Function for reading the sensor's registers through I2C bus.
