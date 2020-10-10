@@ -184,4 +184,18 @@ int8_t user_i2c_write(uint8_t reg_addr, const uint8_t *data, uint32_t len, void 
  */
 int8_t stream_sensor_data_forced_mode(struct bme280_dev *dev);
 
+
+/*!
+ * @brief This API used to setup the initial enviroment to bme280 device.
+ *
+ * @param[in, out] device   :   Structure instance of bme280_dev.
+ * 
+ * @return Result of API execution status
+ * 
+ * @retval BME280_OK - Success.
+ * @retval BME280_SETUP_FAIL - bm280 setup failed.
+ *
+ */
+int8_t setup_bme280(struct bme280_dev *device);
+
 #endif /* BME280_API_H_ */

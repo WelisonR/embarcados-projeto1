@@ -134,6 +134,7 @@
 
 /**\name API success code */
 #define BME280_OK                                 INT8_C(0)
+#define BME280_SETUP_FAIL                         INT8_C(-1)
 
 /**\name API error codes */
 #define BME280_E_NULL_PTR                         INT8_C(-1)
@@ -241,6 +242,7 @@
 #define BME280_SOFT_RESET_COMMAND                 (0xB6)
 #define BME280_STATUS_IM_UPDATE                   (0x01)
 
+#define I2C_PATH                                  "/dev/i2c-1"
 #define SENSOR_DATA_MEAN_SIZE                     (0x0A)
 
 /*!

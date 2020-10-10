@@ -183,7 +183,7 @@ void store_sensor_data_mean(struct bme280_data *sensor_data, int n) {
 int8_t stream_sensor_data_forced_mode(struct bme280_dev *dev)
 {
     /* Variable to define the result */
-    int8_t rslt = BME280_OK;
+    int8_t device_response = BME280_OK;
 
     /* Variable to define the selecting sensors */
     uint8_t settings_sel = 0;
@@ -200,12 +200,12 @@ int8_t stream_sensor_data_forced_mode(struct bme280_dev *dev)
     settings_sel = BME280_OSR_PRESS_SEL | BME280_OSR_TEMP_SEL | BME280_OSR_HUM_SEL | BME280_FILTER_SEL;
 
     /* Set the sensor settings */
-    rslt = bme280_set_sensor_settings(settings_sel, dev);
-    if (rslt != BME280_OK)
+    device_response = bme280_set_sensor_settings(settings_sel, dev);
+    if (device_response != BME280_OK)
     {
-        fprintf(stderr, "Failed to set sensor settings (code %+d).", rslt);
+        fprintf(stderr, "Failed to set sensor settings (code %+d).", device_response);
 
-        return rslt;
+        return device_response;
     }
 
     printf("Temperature, Pressure, Humidity\n");
@@ -224,10 +224,10 @@ int8_t stream_sensor_data_forced_mode(struct bme280_dev *dev)
     while (1)
     {
         /* Set the sensor to forced mode */
-        rslt = bme280_set_sensor_mode(BME280_FORCED_MODE, dev);
-        if (rslt != BME280_OK)
+        device_response = bme280_set_sensor_mode(BME280_FORCED_MODE, dev);
+        if (device_response != BME280_OK)
         {
-            fprintf(stderr, "Failed to set sensor mode (code %+d).", rslt);
+            fprintf(stderr, "Failed to set sensor mode (code %+d).", device_response);
             break;
         }
 
@@ -236,10 +236,10 @@ int8_t stream_sensor_data_forced_mode(struct bme280_dev *dev)
         /* sleep 1 second to give space between measures */
         sleep(1);
 
-        rslt = bme280_get_sensor_data(BME280_ALL, &sensor_data[it], dev);
-        if (rslt != BME280_OK)
+        device_response = bme280_get_sensor_data(BME280_ALL, &sensor_data[it], dev);
+        if (device_response != BME280_OK)
         {
-            fprintf(stderr, "Failed to get sensor data (code %+d).", rslt);
+            fprintf(stderr, "Failed to get sensor data (code %+d).", device_response);
             break;
         }
 
@@ -254,5 +254,49 @@ int8_t stream_sensor_data_forced_mode(struct bme280_dev *dev)
         it = (it+1)%SENSOR_DATA_MEAN_SIZE;
     }
 
-    return rslt;
+    return device_response;
+}
+
+/*!
+ * @brief This API setup the initial environment used by bme280.
+ */
+int8_t setup_bme280(struct bme280_dev *device) {
+    // struct bme280_dev device;
+    struct identifier id;
+
+    /* Variable to define the result */
+    int8_t device_response = BME280_OK;
+
+    if ((id.fd = open(I2C_PATH, O_RDWR)) < 0)
+    {
+        fprintf(stderr, "Failed to open the i2c bus %s\n", I2C_PATH);
+        exit(1);
+    }
+
+    /* Make sure to select BME280_I2C_ADDR_PRIM or BME280_I2C_ADDR_SEC as needed */
+    id.dev_addr = BME280_I2C_ADDR_PRIM;
+
+    device->intf = BME280_I2C_INTF;
+    device->read = user_i2c_read;
+    device->write = user_i2c_write;
+    device->delay_us = user_delay_us;
+
+    /* Update interface pointer with the structure that contains both device address and file descriptor */
+    device->intf_ptr = &id;
+
+    if (ioctl(id.fd, I2C_SLAVE, id.dev_addr) < 0)
+    {
+        fprintf(stderr, "Failed to acquire bus access and/or talk to slave.\n");
+        return BME280_SETUP_FAIL;
+    }
+
+    /* Initialize the bme280 */
+    device_response = bme280_init(device);
+    if (device_response != BME280_OK)
+    {
+        fprintf(stderr, "Failed to initialize the device (code %+d).\n", device_response);
+        return BME280_SETUP_FAIL;
+    }
+
+    return BME280_OK;
 }
