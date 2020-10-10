@@ -1,4 +1,5 @@
 #include "bme280_api.h"
+#include "uart.h"
 #include "system_monitor.h"
 
 /*!

@@ -4,7 +4,6 @@
 /* header includes */
 #include <stdio.h>
 #include <time.h>
-/* header includes */
 
 /* Structure that stores the system temperature */
 struct system_temperature
