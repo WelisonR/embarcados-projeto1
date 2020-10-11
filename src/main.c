@@ -1,5 +1,6 @@
 #include "bme280_api.h"
 #include "uart.h"
+#include "lcd.h"
 #include "system_monitor.h"
 
 /*!
@@ -7,6 +8,13 @@
  */
 int main(int argc, char* argv[])
 {
+    if (wiringPiSetup () == -1) {
+        fprintf(stderr, "Failed to initialize LCD display.\n");
+        exit (1);
+    }
+    int fd_lcd = wiringPiI2CSetup(I2C_ADDR);
+    lcd_init(fd_lcd);
+
     struct bme280_dev device;
     int8_t device_setup_status = setup_bme280(&device);
 
