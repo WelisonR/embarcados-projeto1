@@ -20,7 +20,7 @@
  */
 void write_float(int fd, float value)   {
   char buffer[20];
-  sprintf(buffer, "%.2f",  value);
+  sprintf(buffer, "%4.2f",  value);
   write_string(fd, buffer);
 }
 
@@ -97,9 +97,9 @@ void lcd_toggle_enable(int fd, int bits)   {
 /*!
  * @brief Function used to setup the initial states of the lcd display.
  */
-void lcd_init(int fd) {
-  lcd_byte(fd, 0x32, LCD_CMD); // initialize
-  lcd_byte(fd, 0x33, LCD_CMD); // initialize
+void lcd_init(int fd)   {
+  lcd_byte(fd, 0x33, LCD_CMD); // Initialise
+  lcd_byte(fd, 0x32, LCD_CMD); // Initialise
   lcd_byte(fd, 0x06, LCD_CMD); // Cursor move direction
   lcd_byte(fd, 0x0C, LCD_CMD); // 0x0F On, Blink Off
   lcd_byte(fd, 0x28, LCD_CMD); // Data length, number of lines, font size
