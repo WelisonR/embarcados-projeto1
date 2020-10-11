@@ -1,4 +1,4 @@
-#include "uart.h"
+#include "uart_api.h"
 
 /*!
  * @brief Function used to store in csv file the measured temperatures.

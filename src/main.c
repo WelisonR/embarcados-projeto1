@@ -1,5 +1,5 @@
 #include "bme280_api.h"
-#include "uart.h"
+#include "uart_api.h"
 #include "lcd.h"
 #include "system_monitor.h"
 

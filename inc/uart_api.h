@@ -1,5 +1,5 @@
-#ifndef UART_H_
-#define UART_H_
+#ifndef UART_API_H
+#define UART_API_H
 
 /* header includes */
 #include <stdio.h>
@@ -69,4 +69,4 @@ float ask_float_data(int uart0_filestream, int command_type);
  */
 float uart(int command_type);
 
-#endif /* UART_H_ */
+#endif /* UART_API_H */
