@@ -1,17 +1,32 @@
+#include <bcm2835.h>
 #include "bcm2835_api.h"
 
 /*!
- * @brief Function used to enable a specific device.
+ * @brief Function used to enable the ventilator. (HIGH/LOW logic inverted)
  */
-void enable_device(int device) {
-    bcm2835_gpio_write(device, LOW);
+void enable_ventilator() {
+    bcm2835_gpio_write(VENTILATOR, LOW);
 }
 
 /*!
- * @brief Function used to disable a specific device.
+ * @brief Function used to disable the ventilator. (HIGH/LOW logic inverted)
  */
-void disable_device(int device) {
-    bcm2835_gpio_write(device, HIGH);
+void disable_ventilator() {
+    bcm2835_gpio_write(VENTILATOR, HIGH);
+}
+
+/*!
+ * @brief Function used to enable the resistence. (HIGH/LOW logic inverted)
+ */
+void enable_resistence() {
+    bcm2835_gpio_write(RESISTANCE, LOW);
+}
+
+/*!
+ * @brief Function used to disable the resistence. (HIGH/LOW logic inverted)
+ */
+void disable_resistence() {
+    bcm2835_gpio_write(RESISTANCE, HIGH);
 }
 
 /*!
@@ -28,8 +43,8 @@ int setup_devices() {
     bcm2835_gpio_fsel(RESISTANCE, BCM2835_GPIO_FSEL_OUTP);
 
     // Turn down devices as first state
-    disable_device(VENTILATOR);
-    disable_device(RESISTANCE);
+    disable_ventilator();
+    disable_resistence();
 
     return BCM2835_SUCESS;
 }
@@ -39,8 +54,8 @@ int setup_devices() {
  */
 void handle_interruption(int signal) {
     printf("Signal: %d. Shutting down...\n", signal);
-    disable_device(VENTILATOR);
-    disable_device(RESISTANCE);
+    disable_ventilator();
+    disable_resistence();
     bcm2835_close();
     exit(0);
 }

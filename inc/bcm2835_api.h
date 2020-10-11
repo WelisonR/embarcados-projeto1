@@ -4,7 +4,6 @@
 /* header includes */
 #include <stdio.h>
 #include <stdlib.h>
-#include <bcm2835.h>
 #include <signal.h>
 
 /* Definitions to bcm2835 */
@@ -14,28 +13,25 @@
 #define RESISTANCE          RPI_V2_GPIO_P1_16
 
 /*!
- * @brief Function used to enable a specific device.
- *
- * @param[in] device       :       device to be enabled.
- *
- * device:
- * - VENTILATOR
- * - RESISTANCE
- *
+ * @brief Function used to enable the ventilator. (HIGH/LOW logic inverted)
  */
-void enable_device(int device);
+void enable_ventilator();
 
 /*!
- * @brief Function used to disable a specific device.
- *
- * @param[in] device       :       device to be disabled.
- *
- * device:
- * - VENTILATOR
- * - RESISTANCE
- *
+ * @brief Function used to disable the ventilator. (HIGH/LOW logic inverted)
  */
-void disable_device(int device);
+void disable_ventilator();
+
+/*!
+ * @brief Function used to enable the resistence. (HIGH/LOW logic inverted)
+ */
+void enable_resistence();
+
+/*!
+ * @brief Function used to disable the resistence. (HIGH/LOW logic inverted)
+ */
+void disable_resistence();
+
 
 /*!
  * @brief Function used to setup the initial state of the actuators.
