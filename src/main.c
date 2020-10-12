@@ -20,6 +20,14 @@ int main(int argc, char* argv[])
 
     // return 0;
 
+    setup_bme280();
+
+    while(1) {
+        float val = get_bme280_temperature();
+        printf("%.2f\n", val);
+        sleep(1);
+    }
+
     // struct bme280_dev device;
     // int8_t device_setup_status = setup_bme280(&device);
 
@@ -35,5 +43,5 @@ int main(int argc, char* argv[])
     //     exit(1);
     // }
 
-    // return 0;
+    return 0;
 }

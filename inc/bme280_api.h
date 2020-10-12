@@ -63,11 +63,15 @@
 struct identifier
 {
     /* Variable to hold device address */
-    uint8_t dev_addr;
+    uint8_t device_address;
 
     /* Variable that contains file descriptor */
-    int8_t fd;
+    int8_t file_descriptor;
 };
+
+/******************************************************************************/
+/*!                           File definitions                                */
+#define I2C_PATH "/dev/i2c-1"
 
 /****************************************************************************/
 /*!                         Functions                                       */
@@ -134,32 +138,27 @@ int8_t user_i2c_read(uint8_t reg_addr, uint8_t *data, uint32_t len, void *intf_p
 int8_t user_i2c_write(uint8_t reg_addr, const uint8_t *data, uint32_t len, void *intf_ptr);
 
 /*!
- * @brief Function reads temperature, humidity and pressure data in forced mode.
+ * @brief Function used to setup the read configurations to bme280 sensor.
+ * 
+ *  @return Status of execution
  *
- * @param[in] dev   :   Structure instance of bme280_dev.
- *
- * @return Result of API execution status
- *
- * @retval BME280_OK - Success.
- * @retval BME280_E_NULL_PTR - Error: Null pointer error
- * @retval BME280_E_COMM_FAIL - Error: Communication fail error
- * @retval BME280_E_NVM_COPY_FAILED - Error: NVM copy failed
+ *  @retval BME280_OK -> Success
+ *  @retval others    -> Failure
  *
  */
-int8_t stream_sensor_data_forced_mode(struct bme280_dev *dev);
-
+int8_t setup_bme280_read_mode();
 
 /*!
- * @brief This API used to setup the initial enviroment to bme280 device.
+ * @brief Function used to setup and initialize all the connection with bme280 sensor.
+ */
+void setup_bme280();
+
+/*!
+ * @brief Function used to get the temperature value from bme280 sensor.
  *
- * @param[in, out] device   :   Structure instance of bme280_dev.
- * 
- * @return Result of API execution status
- * 
- * @retval BME280_OK - Success.
- * @retval BME280_SETUP_FAIL - bm280 setup failed.
+ *  @return Float temperature (°C)
  *
  */
-int8_t setup_bme280(struct bme280_dev *device);
+float get_bme280_temperature();
 
 #endif /* BME280_API_H_ */
