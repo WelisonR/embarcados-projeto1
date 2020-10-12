@@ -60,7 +60,8 @@ void store_temperature_data(struct system_data *temperatures) {
 
     /* Store datetime, external temperature, internal temperature and reference temperature */
     fprintf(fp, "%s %s, %0.2lf, %0.2lf, %0.2lf\n",
-        formatted_date, formatted_hour, temperatures->external, temperatures->internal, temperatures->reference);
+        formatted_date, formatted_hour, temperatures->internal_temperature,
+        temperatures->external_temperature, temperatures->reference_temperature);
 
     printf(">> Temperaturas salvas em %s.\n", filepath);
     fclose(fp);
@@ -69,8 +70,9 @@ void store_temperature_data(struct system_data *temperatures) {
 void display_temperatures_lcd(int file_descriptor, struct system_data *temperature) {
     char lcd_line1[16], lcd_line2[16];
 
-    sprintf(lcd_line1, "TI %.2f TE %.2f", temperature->internal, temperature->external);
-    sprintf(lcd_line2, "TR %.2f", temperature->reference);
+    sprintf(lcd_line1, "TI %.2f TE %.2f",
+        temperature->internal_temperature, temperature->external_temperature);
+    sprintf(lcd_line2, "TR %.2f", temperature->reference_temperature);
 
     clear_lcd(file_descriptor);
     set_cursor_location(file_descriptor, LINE1);

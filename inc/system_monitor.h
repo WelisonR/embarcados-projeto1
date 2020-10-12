@@ -9,11 +9,11 @@
 struct system_data
 {
     // Internal temperature (°C);
-    float internal;
+    float internal_temperature;
     // External temperature (°C);
-    float external;
+    float external_temperature;
     // Reference temperature (°C) - defined from terminal or potentiometer.
-    float reference;
+    float reference_temperature;
 };
 
 /*!
@@ -50,9 +50,9 @@ void store_temperature_data(struct system_data *temperatures);
  * @param[out] temperature in lcd             :   display temperature in 16x2 lcd display.
  *
  * temperature:
- * - internal.
- * - external.
- * - reference.
+ * - internal_temperature.
+ * - external_temperature.
+ * - reference_temperature.
  *
  */
 void display_temperatures_lcd(int file_descriptor, struct system_data *temperature);
