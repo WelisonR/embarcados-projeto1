@@ -35,7 +35,7 @@ void disable_resistence() {
 int setup_devices() {
     if (!bcm2835_init()) {
         fprintf(stderr, "Cannot setup the actuators devices.");
-        return BCM2835_FAIL;
+        raise(SIGABRT);
     }
 
     // Set pins as output

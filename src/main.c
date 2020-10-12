@@ -5,7 +5,7 @@
 #include "uart_api.h"
 
 void handle_all_interruptions(int signal) {
-    printf("\nEnding the program... Closing all connections!\n");
+    printf("\nEnding the program... Finishing all connections!\n");
     handle_actuators_interruption(signal);
 }
 
