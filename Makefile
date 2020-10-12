@@ -1,5 +1,5 @@
 CC = gcc
-LDFLAGS = -lwiringPi 
+LDFLAGS = -lwiringPi -lpthread
 BLDDIR = .
 INCDIR = $(BLDDIR)/inc
 SRCDIR = $(BLDDIR)/src
@@ -12,7 +12,7 @@ EXE = bin/bin
 all: clean $(EXE) 
     
 $(EXE): $(OBJ) 
-	$(CC) $(LDFLAGS) $(OBJDIR)/*.o -o $@  -lbcm2835
+	$(CC) $(LDFLAGS) $(OBJDIR)/*.o -o $@  -lbcm2835 
 
 $(OBJDIR)/%.o : $(SRCDIR)/%.c
 	@mkdir -p $(@D)

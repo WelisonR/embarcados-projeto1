@@ -1,3 +1,4 @@
+#include <pthread.h>
 #include "bme280_api.h"
 #include "bcm2835_api.h"
 #include "lcd.h"
@@ -12,8 +13,8 @@ int lcd_file_descriptor;
 void handle_all_interruptions(int signal);
 void set_system_temperatures();
 void control_actuators();
-void update_control_system_temperature();
-void store_display_temperature();
+void* update_control_system_temperature();
+void* store_display_temperature();
 
 
 /*!
@@ -29,6 +30,9 @@ int main(int argc, char* argv[])
     signal(SIGBUS, handle_all_interruptions);
     signal(SIGSEGV, handle_all_interruptions);
 
+    pthread_t manage_temperature_thread;
+    pthread_t store_display_thead;
+
     enviroment_data.hysteresis = 4;
     
     /* Setup lcd display */
@@ -42,10 +46,11 @@ int main(int argc, char* argv[])
     /* Setup bme280 - External temperature */
     setup_bme280();
 
-    while(1) {
-        update_control_system_temperature();
-        store_display_temperature();
-    }
+    pthread_create(&manage_temperature_thread, NULL, &update_control_system_temperature, NULL);
+    pthread_create(&store_display_thead, NULL, &store_display_temperature, NULL);
+
+    pthread_join(manage_temperature_thread, NULL);
+    pthread_join(store_display_thead, NULL);
 
     return 0;
 }
@@ -87,14 +92,18 @@ void control_actuators() {
     }
 }
 
-void update_control_system_temperature() {
-    set_system_temperatures();
-    control_actuators();
-    usleep(500);
+void* update_control_system_temperature() {
+    while(1) {
+        set_system_temperatures();
+        control_actuators();
+        usleep(500);
+    }
 }
 
-void store_display_temperature() {
-    store_temperature_data(&enviroment_data);
-    display_temperatures_lcd(lcd_file_descriptor, &enviroment_data);
-    sleep(2);
+void* store_display_temperature() {
+    while(1) {
+        store_temperature_data(&enviroment_data);
+        display_temperatures_lcd(lcd_file_descriptor, &enviroment_data);
+        sleep(2);
+    }
 }
