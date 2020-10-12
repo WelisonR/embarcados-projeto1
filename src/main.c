@@ -9,39 +9,13 @@
  */
 int main(int argc, char* argv[])
 {
-    // setup_devices();
-    // signal(SIGINT, handle_interruption);
+    struct system_data enviroment_data;
+    
+    /* Setup lcd display  */
+    if (wiringPiSetup () == -1) exit (1);
+    int lcd_file_descriptor = wiringPiI2CSetup(I2C_ADDR);
+    lcd_init(lcd_file_descriptor);
 
-    // while(1) {
-    //     sleep(5);
-    //     enable_ventilator();
-    //     sleep(15);
-    // }
-
-    // return 0;
-
-    setup_bme280();
-
-    while(1) {
-        float val = get_bme280_temperature();
-        printf("%.2f\n", val);
-        sleep(1);
-    }
-
-    // struct bme280_dev device;
-    // int8_t device_setup_status = setup_bme280(&device);
-
-    // if(device_setup_status == BME280_SETUP_FAIL) {
-    //     exit(1);
-    // }
-
-    // int8_t device_response = BME280_OK;
-    // device_response = stream_sensor_data_forced_mode(&device);
-    // if (device_response != BME280_OK)
-    // {
-    //     fprintf(stderr, "Failed to stream sensor data (code %+d).\n", device_response);
-    //     exit(1);
-    // }
 
     return 0;
 }

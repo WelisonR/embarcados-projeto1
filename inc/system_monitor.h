@@ -6,7 +6,7 @@
 #include <time.h>
 
 /* Structure that stores the system temperature */
-struct system_temperature
+struct system_data
 {
     // Internal temperature (°C);
     float internal;
@@ -36,10 +36,25 @@ void set_current_formatted_hour(char *formatted_hour);
 /*!
  * @brief Function used to store in csv file the measured temperatures.
  *
- * @param[in] system_temperature    :   Structure instance of system_temperature.
+ * @param[in] system_data    :   Structure instance of system_data.
  * @param[out] csv file             :   Store temperature data into a csv file.
  *
  */
-void store_temperature_data(struct system_temperature *temperatures);
+void store_temperature_data(struct system_data *temperatures);
+
+/*!
+ * @brief Function used to store in csv file the measured temperatures.
+ *
+ * @param[in] file_descriptor                 :   file descriptor to use with lcd.
+ * @param[in] temperature                     :   all system temperature.
+ * @param[out] temperature in lcd             :   display temperature in 16x2 lcd display.
+ *
+ * temperature:
+ * - internal.
+ * - external.
+ * - reference.
+ *
+ */
+void display_temperatures_lcd(int file_descriptor, struct system_data *temperature);
 
 #endif /* SYSTEM_MONITOR_H_ */

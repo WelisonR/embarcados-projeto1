@@ -1,4 +1,5 @@
 #include "system_monitor.h"
+#include "lcd.h"
 
 /*!
  * @brief This API used to save the current date (DD-MM-YYYY) into a string.
@@ -31,7 +32,7 @@ void set_current_formatted_hour(char *formatted_hour) {
 /*!
  * @brief This API used to store in csv file the datetime with temperatures.
  */
-void store_temperature_data(struct system_temperature *temperatures) {
+void store_temperature_data(struct system_data *temperatures) {
     char filepath[] = "data/temperature_monitor.csv";
     FILE *fp = fopen(filepath,"a+");
     fseek (fp, 0, SEEK_END);
@@ -63,4 +64,17 @@ void store_temperature_data(struct system_temperature *temperatures) {
 
     printf(">> Temperaturas salvas em %s.\n", filepath);
     fclose(fp);
+}
+
+void display_temperatures_lcd(int file_descriptor, struct system_data *temperature) {
+    char lcd_line1[16], lcd_line2[16];
+
+    sprintf(lcd_line1, "TI %.2f TE %.2f", temperature->internal, temperature->external);
+    sprintf(lcd_line2, "TR %.2f", temperature->reference);
+
+    clear_lcd(file_descriptor);
+    set_cursor_location(file_descriptor, LINE1);
+    write_string(file_descriptor, lcd_line1);
+    set_cursor_location(file_descriptor, LINE2);
+    write_string(file_descriptor, lcd_line2);
 }
