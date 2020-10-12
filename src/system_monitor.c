@@ -68,7 +68,7 @@ void store_temperature_data(struct system_data *temperatures) {
 }
 
 void display_temperatures_lcd(int file_descriptor, struct system_data *temperature) {
-    char lcd_line1[16], lcd_line2[16];
+    char lcd_line1[17], lcd_line2[17];
 
     sprintf(lcd_line1, "TI %.2f TE %.2f",
         temperature->internal_temperature, temperature->external_temperature);
