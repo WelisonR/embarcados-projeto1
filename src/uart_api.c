@@ -79,7 +79,7 @@ float ask_float_data(int uart0_filestream, int command_type) {
  */
 float uart(int command_type) {
     int uart0_filestream = setup_uart(UART_PATH);
-    float response = 0.0f;
+    float response = -1.0f;
 
     if(uart0_filestream != UART_FAIL) {
         response = ask_float_data(uart0_filestream, command_type);

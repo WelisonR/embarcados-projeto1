@@ -109,7 +109,7 @@ void setup_bme280()
     if ((id.file_descriptor = open(I2C_PATH, O_RDWR)) < 0)
     {
         fprintf(stderr, "Failed to open the i2c bus %s\n", I2C_PATH);
-        exit(1);
+        raise(SIGABRT);
     }
 
     /* Select BME280_I2C_ADDR_PRIM or BME280_I2C_ADDR_SEC as needed */
@@ -118,7 +118,7 @@ void setup_bme280()
     if (ioctl(id.file_descriptor, I2C_SLAVE, id.device_address) < 0)
     {
         fprintf(stderr, "Failed to acquire bus access and/or talk to slave.\n");
-        exit(1);
+        raise(SIGABRT);
     }
 
     /* Make sure to select BME280_I2C_ADDR_PRIM or BME280_I2C_ADDR_SEC as needed */
@@ -135,14 +135,14 @@ void setup_bme280()
     if (response != BME280_OK)
     {
         fprintf(stderr, "Failed to initialize the device (code %+d).\n", response);
-        exit(1);
+        raise(SIGABRT);
     }
 
     response = setup_bme280_read_mode();
     if (response != BME280_OK)
     {
         fprintf(stderr, "Failed to stream sensor data (code %+d).\n", response);
-        exit(1);
+        raise(SIGABRT);
     }
 }
 

@@ -50,6 +50,6 @@ int setup_devices();
  * @param[in] signal           :   Received system signal.
  *
  */
-void handle_interruption(int signal);
+void handle_actuators_interruption(int signal);
 
 #endif /* BCM2835_API_H_ */

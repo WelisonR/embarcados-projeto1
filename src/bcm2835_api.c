@@ -52,8 +52,7 @@ int setup_devices() {
 /*!
  * @brief Function used to handle program interruption, disable devices and exit.
  */
-void handle_interruption(int signal) {
-    printf("Signal: %d. Shutting down...\n", signal);
+void handle_actuators_interruption(int signal) {
     disable_ventilator();
     disable_resistence();
     bcm2835_close();

@@ -4,11 +4,24 @@
 #include "system_monitor.h"
 #include "uart_api.h"
 
+void handle_all_interruptions(int signal) {
+    printf("\nEnding the program... Closing all connections!\n");
+    handle_actuators_interruption(signal);
+}
+
 /*!
  * @brief This function starts execution of the program.
  */
 int main(int argc, char* argv[])
 {
+    signal(SIGHUP, handle_all_interruptions);
+    signal(SIGINT, handle_all_interruptions);
+    signal(SIGQUIT, handle_all_interruptions);
+    signal(SIGILL, handle_all_interruptions);
+    signal(SIGABRT, handle_all_interruptions);
+    signal(SIGBUS, handle_all_interruptions);
+    signal(SIGSEGV, handle_all_interruptions);
+
     struct system_data enviroment_data;
     
     /* Setup lcd display */
