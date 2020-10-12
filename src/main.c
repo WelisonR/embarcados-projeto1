@@ -9,6 +9,17 @@ void handle_all_interruptions(int signal) {
     handle_actuators_interruption(signal);
 }
 
+void control_actuators(float reference_temperature, float internal_temperature, float hysteresis) {
+    if (internal_temperature > reference_temperature + hysteresis/2.0) {
+        enable_ventilator();
+        disable_resistence();
+    }
+    else if (internal_temperature < reference_temperature - hysteresis/2.0) {
+        disable_ventilator();
+        enable_resistence();
+    }
+}
+
 /*!
  * @brief This function starts execution of the program.
  */
@@ -23,6 +34,9 @@ int main(int argc, char* argv[])
     signal(SIGSEGV, handle_all_interruptions);
 
     struct system_data enviroment_data;
+
+    enviroment_data.hysteresis = 4;
+    // enviroment_data.reference_temperature = 40;
     
     /* Setup lcd display */
     if (wiringPiSetup () == -1) exit (1);
@@ -38,9 +52,11 @@ int main(int argc, char* argv[])
     while(1) {
         enviroment_data.external_temperature = get_bme280_temperature();
         enviroment_data.internal_temperature = uart(ASK_INTERNAL_TEMPERATURE);
-        sleep(1);
         enviroment_data.reference_temperature = uart(ASK_REFERENCE_TEMPERATURE);
 
+        control_actuators(enviroment_data.reference_temperature, enviroment_data.internal_temperature,
+            enviroment_data.hysteresis);
+        
         store_temperature_data(&enviroment_data);
 
         sleep(3);

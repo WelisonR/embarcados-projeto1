@@ -14,6 +14,8 @@ struct system_data
     float external_temperature;
     // Reference temperature (°C) - defined from terminal or potentiometer.
     float reference_temperature;
+    // System hysteresis
+    float hysteresis;
 };
 
 /*!
