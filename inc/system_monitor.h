@@ -5,6 +5,9 @@
 #include <stdio.h>
 #include <time.h>
 
+#define IS_POTENTIOMETER_REFERENCE 0
+#define IS_KEYBOARD_REFERENCE      1
+
 /* Structure that stores the system temperature */
 struct system_data
 {
@@ -16,6 +19,8 @@ struct system_data
     float reference_temperature;
     // System hysteresis
     float hysteresis;
+    // Define the external temperature measure type (keyboard or potentiometer)
+    int reference_temperature_type;
 };
 
 /*!
