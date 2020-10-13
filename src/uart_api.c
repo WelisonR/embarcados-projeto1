@@ -69,7 +69,8 @@ float ask_float_data(int uart0_filestream, int command_type) {
     sleep(1);
 
     float response = (float) UART_FAIL;
-    read_uart(uart0_filestream, (void*) &response, sizeof(float));
+    message_size = read_uart(uart0_filestream, (void*) &response, sizeof(float));
+    if(message_size < 0) return (float) UART_FAIL;
 
     return response;
 }
@@ -78,12 +79,11 @@ float ask_float_data(int uart0_filestream, int command_type) {
  * @brief Function used to recover internal temperature and reference temperature.
  */
 float uart(int command_type) {
-    int uart0_filestream = setup_uart(UART_PATH);
     float response = -1.0f;
+    int uart0_filestream = setup_uart(UART_PATH);
 
-    if(uart0_filestream != UART_FAIL) {
-        response = ask_float_data(uart0_filestream, command_type);
-    }
+    if(uart0_filestream == UART_FAIL) return (float) UART_FAIL;
+    response = ask_float_data(uart0_filestream, command_type);
 
     close(uart0_filestream);
 
