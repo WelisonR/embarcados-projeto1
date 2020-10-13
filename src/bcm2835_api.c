@@ -56,5 +56,4 @@ void handle_actuators_interruption(int signal) {
     disable_ventilator();
     disable_resistence();
     bcm2835_close();
-    exit(0);
 }

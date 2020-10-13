@@ -30,7 +30,7 @@ char *MENU_CHOICES[] = {
     "2. Set reference temperature from keyboard.",
     "3. Set system histeresis.",
     " ",
-    "0. Exit program.",
+    "Press CTRL + C to stop the program!",
     (char *)NULL,
 };
 
@@ -137,8 +137,9 @@ void setup_iterative_menu()
         /* empty description, first char is the command type */
         list_items[i] = new_item(MENU_CHOICES[i], "");
     }
-    /* Empty row is not selectable */
+    /* Empty row and exit row are not selectable */
     item_opts_off(list_items[3], O_SELECTABLE);
+    item_opts_off(list_items[4], O_SELECTABLE);
 
     /* Crate menu */
     selection_menu = new_menu((ITEM **)list_items);
@@ -163,9 +164,11 @@ void setup_iterative_menu()
     post_menu(selection_menu);
     wrefresh(main_menu_window);
 
-    /* Execute until user type F1 to exit */
-    while ((user_input = wgetch(main_menu_window)) != KEY_F(1))
+    /* Execute until CTRL + C */
+    while (1)
     {
+        user_input = wgetch(main_menu_window);
+
         switch (user_input)
         {
         case KEY_DOWN:
@@ -193,10 +196,6 @@ void setup_iterative_menu()
                 read_float(float_input_window, " Type the hysteresis value >> ");
                 set_hysteresis();
             }
-            else if (selected_item_value == '0')
-            {
-                raise(SIGABRT);
-            }
             move(8, 1);
             pos_menu_cursor(selection_menu);
             break;
@@ -220,10 +219,10 @@ void clean_ncurses_alocation()
     {
         free_item(list_items[i]);
     }
-    // free_menu(selection_menu);
+    free_menu(selection_menu);
 
     delwin(main_menu_window);
-    // delwin(float_input_window);
+    delwin(float_input_window);
 
     endwin();
 }

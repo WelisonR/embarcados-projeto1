@@ -17,6 +17,11 @@ void control_actuators();
 void* update_control_system_temperature();
 void* store_display_temperature();
 
+/* Program threads */
+pthread_t manage_user_inputs;
+pthread_t manage_temperature_thread;
+pthread_t store_display_thead;
+
 
 /*!
  * @brief This function starts execution of the program.
@@ -38,11 +43,6 @@ int main(int argc, char* argv[])
     enviroment_data.hysteresis = 4;
     enviroment_data.reference_temperature_type = IS_POTENTIOMETER_REFERENCE;
 
-    /* Program threads */
-    pthread_t manage_user_inputs;
-    pthread_t manage_temperature_thread;
-    pthread_t store_display_thead;
-    
     /* Setup lcd display */
     if (wiringPiSetup () == -1) exit (1);
     lcd_file_descriptor = wiringPiI2CSetup(I2C_ADDR);
@@ -71,7 +71,11 @@ int main(int argc, char* argv[])
 }
 
 void handle_all_interruptions(int signal) {
-    printf("\nEnding the program... Finishing all connections!\n");
+    /* Cancel all threads activies */
+    pthread_cancel(manage_user_inputs);
+    pthread_cancel(manage_temperature_thread);
+    pthread_cancel(store_display_thead);
+
     handle_actuators_interruption(signal);
     clean_ncurses_alocation();
 }
