@@ -4,6 +4,7 @@
 #include "lcd.h"
 #include "system_monitor.h"
 #include "uart_api.h"
+#include "system_apresentation.h"
 
 /* Global variables */
 struct system_data enviroment_data;
@@ -30,10 +31,17 @@ int main(int argc, char* argv[])
     signal(SIGBUS, handle_all_interruptions);
     signal(SIGSEGV, handle_all_interruptions);
 
+    /* Setup initial state to system data */
+    enviroment_data.internal_temperature = 0;
+    enviroment_data.external_temperature = 0;
+    enviroment_data.reference_temperature = 40;
+    enviroment_data.hysteresis = 4;
+    enviroment_data.reference_temperature_type = IS_POTENTIOMETER_REFERENCE;
+
+    /* Program threads */
+    pthread_t manage_user_inputs;
     pthread_t manage_temperature_thread;
     pthread_t store_display_thead;
-
-    enviroment_data.hysteresis = 4;
     
     /* Setup lcd display */
     if (wiringPiSetup () == -1) exit (1);
@@ -46,9 +54,16 @@ int main(int argc, char* argv[])
     /* Setup bme280 - External temperature */
     setup_bme280();
 
+    /* Initialize system apresentation with ncurses */
+    init_system_apresentation(&enviroment_data);
+
+    /* Create system theareds */
+    pthread_create(&manage_user_inputs, NULL, &setup_menu_windows, NULL);
     pthread_create(&manage_temperature_thread, NULL, &update_control_system_temperature, NULL);
     pthread_create(&store_display_thead, NULL, &store_display_temperature, NULL);
 
+    /* Join and finalize threads */
+    pthread_join(manage_user_inputs, NULL);
     pthread_join(manage_temperature_thread, NULL);
     pthread_join(store_display_thead, NULL);
 
@@ -58,23 +73,27 @@ int main(int argc, char* argv[])
 void handle_all_interruptions(int signal) {
     printf("\nEnding the program... Finishing all connections!\n");
     handle_actuators_interruption(signal);
+    clean_ncurses_alocation();
 }
 
 void set_system_temperatures() {
     float external_temperature = get_bme280_temperature();
-    if(external_temperature > 0) {
+    if(external_temperature >= 0) {
         enviroment_data.external_temperature = external_temperature;
     }
 
     float internal_temperature = uart(ASK_INTERNAL_TEMPERATURE);
-    if(internal_temperature > 0) {
+    if(internal_temperature >= 0) {
         enviroment_data.internal_temperature = internal_temperature;
     }
 
-    float reference_temperature = uart(ASK_REFERENCE_TEMPERATURE);
-    if(reference_temperature > 0) {
-        enviroment_data.reference_temperature = reference_temperature;
+    if(enviroment_data.reference_temperature_type == IS_POTENTIOMETER_REFERENCE) {
+        float reference_temperature = uart(ASK_REFERENCE_TEMPERATURE);
+        if(reference_temperature >= 0) {
+            enviroment_data.reference_temperature = reference_temperature;
+        }
     }
+
 }
 
 void control_actuators() {

@@ -39,7 +39,7 @@ void store_temperature_data(struct system_data *temperatures) {
     
     /* If file is not defined, return */
     if(fp == NULL) {
-        printf(">> Não foi possível salvar a média dos dados medidos.\n");
+        // printf(">> Não foi possível salvar a média dos dados medidos.\n");
         return;
     }
 
@@ -63,7 +63,7 @@ void store_temperature_data(struct system_data *temperatures) {
         formatted_date, formatted_hour, temperatures->internal_temperature,
         temperatures->external_temperature, temperatures->reference_temperature);
 
-    printf(">> Temperaturas salvas em %s.\n", filepath);
+    // printf(">> Temperaturas salvas em %s.\n", filepath);
     fclose(fp);
 }
 

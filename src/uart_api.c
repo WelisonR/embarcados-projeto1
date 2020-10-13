@@ -7,11 +7,11 @@ int setup_uart(const char *uart_path) {
     int uart0_filestream = open(uart_path, O_RDWR | O_NOCTTY | O_NDELAY);
 
     if (uart0_filestream == -1) {
-        printf("Erro - Não foi possível iniciar a UART.\n");
+        // printf("Erro - Não foi possível iniciar a UART.\n");
         return UART_FAIL;
     }
     else {
-        printf("UART inicializada!\n");
+        // printf("UART inicializada!\n");
     }
 
     struct termios options;
@@ -32,9 +32,9 @@ int setup_uart(const char *uart_path) {
 ssize_t write_uart(int fd, const void *buf, size_t count) {
     ssize_t message_size = write(fd, buf, count);
     if(message_size < 0) {
-        printf("Houve um erro no envio da mensagem à UART!\n");
+        // printf("Houve um erro no envio da mensagem à UART!\n");
     } else {
-        printf("%03d bytes escritos na UART!\n", message_size);
+        // printf("%03d bytes escritos na UART!\n", message_size);
     }
 
     return message_size;
@@ -46,9 +46,9 @@ ssize_t write_uart(int fd, const void *buf, size_t count) {
 ssize_t read_uart(int fd, void *buf, size_t count) {
     ssize_t response_size = read(fd, buf, count);
     if(response_size < 0) {
-        printf("Houve um erro na leitura da mensagem da UART!\n");
+        // printf("Houve um erro na leitura da mensagem da UART!\n");
     } else {
-        printf("%03d bytes lidos da UART!\n", response_size);
+        // printf("%03d bytes lidos da UART!\n", response_size);
     }
 
     return response_size;
