@@ -133,7 +133,7 @@ void* update_control_system_temperature() {
     while(1) {
         set_system_temperatures();
         control_actuators();
-        usleep(500);
+        usleep(500000);
     }
 }
 

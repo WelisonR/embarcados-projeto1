@@ -66,7 +66,7 @@ float ask_float_data(int uart0_filestream, int command_type) {
     message_size = write_uart(uart0_filestream, &matricula[0], strlen(matricula));
     if(message_size < 0) return (float) UART_FAIL;
 
-    sleep(1);
+    usleep(30000);
 
     float response = (float) UART_FAIL;
     message_size = read_uart(uart0_filestream, (void*) &response, sizeof(float));
