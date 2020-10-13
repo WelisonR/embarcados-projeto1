@@ -58,14 +58,14 @@ int main(int argc, char* argv[])
     init_system_apresentation(&enviroment_data);
 
     /* Create system theareds */
-    pthread_create(&manage_user_inputs, NULL, &setup_menu_windows, NULL);
     pthread_create(&manage_temperature_thread, NULL, &update_control_system_temperature, NULL);
     pthread_create(&store_display_thead, NULL, &store_display_temperature, NULL);
+    pthread_create(&manage_user_inputs, NULL, &setup_menu_windows, NULL);
 
     /* Join and finalize threads */
-    pthread_join(manage_user_inputs, NULL);
     pthread_join(manage_temperature_thread, NULL);
     pthread_join(store_display_thead, NULL);
+    pthread_join(manage_user_inputs, NULL);
 
     return 0;
 }

@@ -23,7 +23,7 @@ char *selected_item_name;
 char selected_item_value;
 float value;
 
-struct system_data *enviroment_data;
+struct system_data *system_display_value = NULL;
 
 char *MENU_CHOICES[] = {
     "1. Set reference temperature as potentiometer.",
@@ -122,8 +122,7 @@ void read_float(WINDOW *win, char *message)
  */
 void set_keyboard_reference_temperature()
 {
-    enviroment_data->reference_temperature_type = IS_KEYBOARD_REFERENCE;
-    enviroment_data->reference_temperature = value;
+    system_display_value->reference_temperature = value;
 }
 
  /*!
@@ -131,7 +130,7 @@ void set_keyboard_reference_temperature()
  */
 void set_potentiometer_reference_temperature()
 {
-    enviroment_data->reference_temperature_type = IS_POTENTIOMETER_REFERENCE;
+    system_display_value->reference_temperature_type = IS_POTENTIOMETER_REFERENCE;
 }
 
 /*!
@@ -139,7 +138,7 @@ void set_potentiometer_reference_temperature()
  */
 void set_hysteresis()
 {
-    enviroment_data->hysteresis = value;
+    system_display_value->hysteresis = value;
 }
 
 /*!
@@ -221,6 +220,7 @@ void setup_iterative_menu()
             }
             else if (selected_item_value == '2')
             {
+                system_display_value->reference_temperature_type = IS_KEYBOARD_REFERENCE;
                 read_float(float_input_window, " Type the reference temperature >> ");
                 set_keyboard_reference_temperature();
             }
@@ -243,8 +243,10 @@ void setup_iterative_menu()
  */
 void *setup_menu_windows()
 {
-    setup_input_menu();
-    setup_iterative_menu();
+    while(1) {
+        setup_input_menu();
+        setup_iterative_menu();
+    }
 }
 
 /*!
@@ -267,10 +269,10 @@ void clean_ncurses_alocation()
 }
 
 /*!
- * @brief Setup initial configurations to ncurses and set pointer to enviroment_data.
+ * @brief Setup initial configurations to ncurses and set pointer to system_display_value.
  */
 void init_system_apresentation(struct system_data *env_data)
 {
-    enviroment_data = env_data;
+    system_display_value = env_data;
     setup_ncurses_initial_configs();
 }
