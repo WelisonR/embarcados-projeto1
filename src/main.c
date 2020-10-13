@@ -70,16 +70,23 @@ int main(int argc, char* argv[])
     return 0;
 }
 
+/*!
+ * @brief Function used to handle system interruptions and close all connections.
+ */
 void handle_all_interruptions(int signal) {
     /* Cancel all threads activies */
     pthread_cancel(manage_user_inputs);
     pthread_cancel(manage_temperature_thread);
     pthread_cancel(store_display_thead);
 
+    /* Close important system resources */
     handle_actuators_interruption(signal);
     clean_ncurses_alocation();
 }
 
+/*!
+ * @brief Function used to set valid system temperatures (internal, external, reference)
+ */
 void set_system_temperatures() {
     float external_temperature = get_bme280_temperature();
     if(external_temperature >= 0) {
@@ -100,6 +107,10 @@ void set_system_temperatures() {
 
 }
 
+/*!
+ * @brief Function used to control actuators (ventilador and resistor)
+ * based on internal temperature, reference temperature and hysteresis.
+ */
 void control_actuators() {
     float reference_temperature = enviroment_data.reference_temperature;
     float internal_temperature = enviroment_data.internal_temperature;
@@ -115,6 +126,9 @@ void control_actuators() {
     }
 }
 
+/*!
+ * @brief Function used to update data and actuators status every 500ms.
+ */
 void* update_control_system_temperature() {
     while(1) {
         set_system_temperatures();
@@ -123,6 +137,9 @@ void* update_control_system_temperature() {
     }
 }
 
+/*!
+ * @brief Function used to store system data (csv) and display temperatures into LCD.
+ */
 void* store_display_temperature() {
     while(1) {
         store_temperature_data(&enviroment_data);

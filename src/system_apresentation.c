@@ -34,6 +34,9 @@ char *MENU_CHOICES[] = {
     (char *)NULL,
 };
 
+/*!
+ * @brief Function used to setup ncurses (display) initial configurations.
+ */
 void setup_ncurses_initial_configs()
 {
     /* Initialize curses */
@@ -45,6 +48,9 @@ void setup_ncurses_initial_configs()
     init_pair(1, COLOR_BLUE, COLOR_BLACK);
 }
 
+/*!
+ * @brief Function used to display text into a especific window at line, column.
+ */
 void display_text(WINDOW *win, int line, int column, char *text)
 {
     if (win == NULL)
@@ -55,6 +61,9 @@ void display_text(WINDOW *win, int line, int column, char *text)
     box(float_input_window, 0, 0);
 }
 
+/*!
+ * @brief Function used to display centered text into a especific window at line, column.
+ */
 void display_text_center(WINDOW *win, int starty, int startx, int width, char *string, chtype color)
 {
     int length, x, y;
@@ -79,6 +88,9 @@ void display_text_center(WINDOW *win, int starty, int startx, int width, char *s
     refresh();
 }
 
+/*!
+ * @brief Function used to setup the title in header of a window.
+ */
 void setup_window_title(WINDOW *win, char *title)
 {
     /* Print a border around the main window and print a title */
@@ -90,6 +102,9 @@ void setup_window_title(WINDOW *win, char *title)
     refresh();
 }
 
+/*!
+ * @brief Function used to read float data with a specific message.
+ */
 void read_float(WINDOW *win, char *message)
 {
     value = -1;
@@ -102,6 +117,37 @@ void read_float(WINDOW *win, char *message)
     wrefresh(float_input_window);
 }
 
+/*!
+ * @brief Function used to set user input as reference temperature (IS_KEYBOARD_REFERENCE)
+ */
+void set_keyboard_reference_temperature()
+{
+    enviroment_data->reference_temperature_type = IS_KEYBOARD_REFERENCE;
+    enviroment_data->reference_temperature = value;
+}
+
+ /*!
+ * @brief Function used to set potentiometer as reference temperature. (IS_POTENTIOMETER_REFERENCE)
+ */
+void set_potentiometer_reference_temperature()
+{
+    enviroment_data->reference_temperature_type = IS_POTENTIOMETER_REFERENCE;
+}
+
+/*!
+ * @brief Function used to set a float value to system hysteresis.
+ */
+void set_hysteresis()
+{
+    enviroment_data->hysteresis = value;
+}
+
+/*!
+ * @brief Function used to read float data with a specific message.
+ *
+ * @param[out] display               :   Display input (float data) window with border.
+ *
+ */
 void setup_input_menu()
 {
     float_input_window = newwin(INPUT_FIELD_HEIGHT, DISPLAY_WIDTH, MENU_HEIGHT + 6, HEADER_X);
@@ -111,22 +157,9 @@ void setup_input_menu()
     wrefresh(float_input_window);
 }
 
-void set_keyboard_reference_temperature()
-{
-    enviroment_data->reference_temperature_type = IS_KEYBOARD_REFERENCE;
-    enviroment_data->reference_temperature = value;
-}
-
-void set_potentiometer_reference_temperature()
-{
-    enviroment_data->reference_temperature_type = IS_POTENTIOMETER_REFERENCE;
-}
-
-void set_hysteresis()
-{
-    enviroment_data->hysteresis = value;
-}
-
+/*!
+ * @brief Function used to read float data with a specific message.
+ */
 void setup_iterative_menu()
 {
     /* Create items */
@@ -205,12 +238,18 @@ void setup_iterative_menu()
     }
 }
 
+/*!
+ * @brief Closure function to setup_input_menu and setup_iterative_menu. (thread)
+ */
 void *setup_menu_windows()
 {
     setup_input_menu();
     setup_iterative_menu();
 }
 
+/*!
+ * @brief Clean all resources allocated by ncurses.
+ */
 void clean_ncurses_alocation()
 {
     /* Unpost and free all the memory taken up */
@@ -227,6 +266,9 @@ void clean_ncurses_alocation()
     endwin();
 }
 
+/*!
+ * @brief Setup initial configurations to ncurses and set pointer to enviroment_data.
+ */
 void init_system_apresentation(struct system_data *env_data)
 {
     enviroment_data = env_data;
