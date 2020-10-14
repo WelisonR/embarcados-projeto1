@@ -56,15 +56,21 @@ void setup_window_title(WINDOW *win, char *title);
  *
  * @param[in] window                      :   Window instance of ncurses.
  * @param[in] message                     :   Message to be displayed to read float.
- * @param[out] display                    :   Display text into header window.
+ * @param[in] minimum_value               :   Minimum valid value.
+ * @param[in] maximum_value               :   Maximum valid value.
+ *
+ * @retval Read float value.
  *
  */
-void read_float(WINDOW *win, char *message);
+float read_float(WINDOW *win, char *message, float minimum_value, float maximum_value);
 
 /*!
  * @brief Function used to set user input as reference temperature (IS_KEYBOARD_REFERENCE)
+ *
+ * @param[in] temp                      :   Value to be defined as reference temperature.
+ *
  */
-void set_keyboard_reference_temperature();
+void set_keyboard_reference_temperature(float value);
 
 /*!
  * @brief Function used to set potentiometer as reference temperature. (IS_POTENTIOMETER_REFERENCE)
@@ -73,8 +79,11 @@ void set_potentiometer_reference_temperature();
 
 /*!
  * @brief Function used to set a float value to system hysteresis.
+ *
+ * @param[in] temp                      :   Value to be defined as hysteresis.
+ *
  */
-void set_hysteresis();
+void set_hysteresis(float value);
 
 /*!
  * @brief Function used to read float data with a specific message.

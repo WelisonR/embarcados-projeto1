@@ -1,4 +1,4 @@
-#include "system_apresentation.h"
+#include "system_windows.h"
 
 /* Header definitions */
 #define ARRAY_SIZE(a) (sizeof(a) / sizeof(a[0]))
@@ -12,6 +12,12 @@
 #define MENU_HEIGHT 10
 #define INPUT_FIELD_HEIGHT 5
 
+#define MAX_SYSTEM_TEMPERATURE 100.0f
+#define MIN_SYSTEM_TEMPERATURE 10.0f
+
+#define MIN_SYSTEM_HYSTERESIS 0.0f
+#define MAX_SYSTEM_HYSTERESIS 100.0f
+
 /* Global variables */
 ITEM **list_items;
 MENU *selection_menu;
@@ -23,7 +29,6 @@ int user_input;
 int choices_size;
 char *selected_item_name;
 char selected_item_value;
-float value;
 
 struct system_data *system_display_value = NULL;
 
@@ -110,23 +115,32 @@ void setup_window_title(WINDOW *win, char *title)
 /*!
  * @brief Function used to read float data with a specific message.
  */
-void read_float(WINDOW *win, char *message)
+float read_float(WINDOW *win, char *message, float minimum_value, float maximum_value)
 {
-    value = -1;
+    float value = -1;
+    char error_message[50];
 
     echo();
     display_text(float_input_window, 3, 1, message);
     wscanw(float_input_window, "%f", &value);
     noecho();
-
     wrefresh(float_input_window);
+
+    if(value < minimum_value || value > maximum_value) {
+        sprintf(error_message, " >> Valid interval: %.2f - %.2f", minimum_value, maximum_value);
+        display_text(float_input_window, 3, 1, error_message);
+        return -1;
+    }
+
+    return value;
 }
 
 /*!
  * @brief Function used to set user input as reference temperature (IS_KEYBOARD_REFERENCE)
  */
-void set_keyboard_reference_temperature()
+void set_keyboard_reference_temperature(float value)
 {
+    system_display_value->reference_temperature_type = IS_KEYBOARD_REFERENCE;
     system_display_value->reference_temperature = value;
 }
 
@@ -141,7 +155,7 @@ void set_potentiometer_reference_temperature()
 /*!
  * @brief Function used to set a float value to system hysteresis.
  */
-void set_hysteresis()
+void set_hysteresis(float value)
 {
     system_display_value->hysteresis = value;
 }
@@ -239,14 +253,19 @@ void setup_iterative_menu()
             }
             else if (selected_item_value == '2')
             {
-                system_display_value->reference_temperature_type = IS_KEYBOARD_REFERENCE;
-                read_float(float_input_window, " Type the reference temperature >> ");
-                set_keyboard_reference_temperature();
+                float temp = read_float(float_input_window, " Type the reference temperature >> ",
+                    MIN_SYSTEM_TEMPERATURE, MAX_SYSTEM_TEMPERATURE);
+                if(temp != -1) {
+                    set_keyboard_reference_temperature(temp);
+                }
             }
             else if (selected_item_value == '3')
             {
-                read_float(float_input_window, " Type the hysteresis value >> ");
-                set_hysteresis();
+                float temp = read_float(float_input_window, " Type the hysteresis value >> ",
+                    MIN_SYSTEM_HYSTERESIS, MAX_SYSTEM_HYSTERESIS);
+                if(temp != -1) {
+                    set_hysteresis(temp);
+                }
             }
             move(13, 1);
             pos_menu_cursor(selection_menu);
