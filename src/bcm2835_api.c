@@ -52,7 +52,7 @@ int setup_devices() {
 /*!
  * @brief Function used to handle program interruption, disable devices and exit.
  */
-void handle_actuators_interruption(int signal) {
+void handle_actuators_interruption() {
     disable_ventilator();
     disable_resistence();
     bcm2835_close();

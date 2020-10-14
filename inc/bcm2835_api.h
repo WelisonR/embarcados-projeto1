@@ -46,10 +46,7 @@ int setup_devices();
 
 /*!
  * @brief Function used to handle program interruption, disable devices and exit.
- *
- * @param[in] signal           :   Received system signal.
- *
  */
-void handle_actuators_interruption(int signal);
+void handle_actuators_interruption();
 
 #endif /* BCM2835_API_H_ */

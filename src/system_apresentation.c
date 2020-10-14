@@ -7,8 +7,8 @@
 
 #define DISPLAY_WIDTH COLS
 #define HEADER_X 0
-#define HEADER_Y 10
-#define SYSTEM_STATUS_HEIGHT 10
+#define HEADER_Y 9
+#define SYSTEM_STATUS_HEIGHT 9
 #define MENU_HEIGHT 10
 #define INPUT_FIELD_HEIGHT 5
 
@@ -285,11 +285,11 @@ void update_system_status_window()
         sprintf(system_hysteresis_str, "System hysteresis: %.2f °C.",
             system_display_value->hysteresis);
 
-        display_text(system_status_window, 3, 2, reference_temperature_type_str);
-        display_text(system_status_window, 4, 2, reference_temperature_str);
-        display_text(system_status_window, 5, 2, internal_temperature_str);
-        display_text(system_status_window, 6, 2, external_temperature_str);
-        display_text(system_status_window, 7, 2, system_hysteresis_str);
+        display_text(system_status_window, 3, 4, reference_temperature_type_str);
+        display_text(system_status_window, 4, 4, reference_temperature_str);
+        display_text(system_status_window, 5, 4, internal_temperature_str);
+        display_text(system_status_window, 6, 4, external_temperature_str);
+        display_text(system_status_window, 7, 4, system_hysteresis_str);
         wrefresh(system_status_window);
         usleep(500000);
     }
@@ -319,7 +319,7 @@ void* setup_system_status_interface() {
 /*!
  * @brief Clean all resources allocated by ncurses.
  */
-void clean_ncurses_alocation()
+void clear_ncurses_alocation()
 {
     /* Unpost and free all the memory taken up */
     unpost_menu(selection_menu);

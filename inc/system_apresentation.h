@@ -121,7 +121,7 @@ void* setup_system_status_interface();
 /*!
  * @brief Clean all resources allocated by ncurses.
  */
-void clean_ncurses_alocation();
+void clear_ncurses_alocation();
 
 /*!
  * @brief Setup initial configurations to ncurses and set pointer to enviroment_data.

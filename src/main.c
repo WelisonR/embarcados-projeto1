@@ -85,8 +85,9 @@ void handle_all_interruptions(int signal) {
     pthread_cancel(store_display_thead);
 
     /* Close important system resources */
-    handle_actuators_interruption(signal);
-    clean_ncurses_alocation();
+    handle_actuators_interruption();
+    clear_lcd(lcd_file_descriptor);
+    clear_ncurses_alocation();
 }
 
 /*!
