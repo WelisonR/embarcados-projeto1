@@ -1,9 +1,9 @@
-# Projeto 01 - Controle de Temperatura em Ambiente Fechado
+# Controle de Temperatura em Ambiente Fechado
 
 **Disciplina**: Fundamentos de Sistemas Embarcados (UnB) - Professor Renato Coral.<br>
 **Tópicos**: Controle de temperatura, integração entre dispositivos, arduino, raspberry, GPIO, UART, I2C.<br>
 
-## Sobre o Projeto
+## Sobre o Projeto 01
 
 O trabalho tem por objetivo a realização do **controle de temperatura de um sistema através de dois dispositivos — um resistor de 15 Watts e uma ventoinha** que puxa o ar externo (a temperatura ambiente) para reduzir a temperatura. Define-se uma temperatura de referência por meio de potenciômetro ou entrada no terminal e, acrescido de um valor de hísterese, controla-se a temperatura interna do sistema com base nas premissas abaixo:
 
@@ -29,6 +29,7 @@ Para executar o projeto, faça o clone do repositório e, na pasta principal, pr
 Observações:
 *   Seguir configuração do ambiente físico descrito no [trabalho 01](https://gitlab.com/fse_fga/projetos/projeto-1).
 *   Instalação das bibliotecas necessárias da raspberry, arduino e demais descritas no Makefile.
+*   Aumentar a janela do terminal em caso de dificuldades de visualização da interface.
 
 ## Instruções de Uso
 
