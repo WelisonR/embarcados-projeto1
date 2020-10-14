@@ -169,7 +169,7 @@ void set_hysteresis(float value)
 void setup_input_menu()
 {
     float_input_window = newwin(INPUT_FIELD_HEIGHT, DISPLAY_WIDTH, MENU_HEIGHT + HEADER_Y, HEADER_X);
-    setup_window_title(float_input_window, "Keyboard Inputs");
+    setup_window_title(float_input_window, "System Inputs/Outputs");
     keypad(float_input_window, TRUE);
     box(float_input_window, 0, 0);
     wrefresh(float_input_window);

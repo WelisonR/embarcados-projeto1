@@ -154,7 +154,7 @@ float get_bme280_temperature()
     struct bme280_data sensor_data;
 
     user_delay_us(minimum_delay, device.intf_ptr);
-    usleep(30000); /* Safe read */
+    usleep(200000); /* Safe read */
 
     int8_t response = bme280_get_sensor_data(BME280_ALL, &sensor_data, &device);
     if (response != BME280_OK)
