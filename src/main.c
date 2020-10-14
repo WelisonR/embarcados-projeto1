@@ -19,6 +19,7 @@ void* store_display_temperature();
 
 /* Program threads */
 pthread_t manage_user_inputs;
+pthread_t display_system_status;
 pthread_t manage_temperature_thread;
 pthread_t store_display_thead;
 
@@ -61,11 +62,14 @@ int main(int argc, char* argv[])
     pthread_create(&manage_temperature_thread, NULL, &update_control_system_temperature, NULL);
     pthread_create(&store_display_thead, NULL, &store_display_temperature, NULL);
     pthread_create(&manage_user_inputs, NULL, &setup_menu_windows, NULL);
+    usleep(10000); /* Wait thread setup of ncurses input region */
+    pthread_create(&display_system_status, NULL, &setup_system_status_interface, NULL);
 
     /* Join and finalize threads */
     pthread_join(manage_temperature_thread, NULL);
     pthread_join(store_display_thead, NULL);
     pthread_join(manage_user_inputs, NULL);
+    pthread_join(display_system_status, NULL);
 
     return 0;
 }
@@ -76,6 +80,7 @@ int main(int argc, char* argv[])
 void handle_all_interruptions(int signal) {
     /* Cancel all threads activies */
     pthread_cancel(manage_user_inputs);
+    pthread_cancel(display_system_status);
     pthread_cancel(manage_temperature_thread);
     pthread_cancel(store_display_thead);
 

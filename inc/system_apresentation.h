@@ -7,6 +7,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <signal.h>
+#include <unistd.h>
 #include "system_monitor.h"
 
 /*!
@@ -84,6 +85,14 @@ void set_hysteresis();
 void setup_input_menu();
 
 /*!
+ * @brief Function used to setup the system status area.
+ *
+ * @param[out] display    :   Display window with system variables information.
+ *
+ */
+void setup_system_status();
+
+/*!
  * @brief Function used to read float data with a specific message.
  *
  * @param[out] display               :   Display input (menu selection) window with border.
@@ -95,6 +104,19 @@ void setup_iterative_menu();
  * @brief Closure function to setup_input_menu and setup_iterative_menu. (thread)
  */
 void* setup_menu_windows();
+
+/*!
+ * @brief Function used to display the system variables values.
+ *
+ * @param[out] display    :   Display system variables values into screen.
+ *
+ */
+void update_system_status_window();
+
+/*!
+ * @brief Closure function to setup_system_status and update_system_status_window. (thread)
+ */
+void* setup_system_status_interface();
 
 /*!
  * @brief Clean all resources allocated by ncurses.

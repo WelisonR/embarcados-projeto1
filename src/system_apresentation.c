@@ -5,10 +5,11 @@
 #define CTRLD 4
 #define ENTER_KEY 10
 
-#define DISPLAY_WIDTH 60
+#define DISPLAY_WIDTH COLS
 #define HEADER_X 0
-#define HEADER_Y 5
-#define MENU_HEIGHT 16
+#define HEADER_Y 10
+#define SYSTEM_STATUS_HEIGHT 10
+#define MENU_HEIGHT 10
 #define INPUT_FIELD_HEIGHT 5
 
 /* Global variables */
@@ -16,6 +17,7 @@ ITEM **list_items;
 MENU *selection_menu;
 WINDOW *main_menu_window;
 WINDOW *float_input_window;
+WINDOW *system_status_window;
 
 int user_input;
 int choices_size;
@@ -44,6 +46,7 @@ void setup_ncurses_initial_configs()
     start_color();
     cbreak();
     noecho();
+    curs_set(FALSE);
     keypad(stdscr, TRUE);
     init_pair(1, COLOR_BLUE, COLOR_BLACK);
 }
@@ -58,7 +61,9 @@ void display_text(WINDOW *win, int line, int column, char *text)
     wmove(win, line, column);
     wclrtoeol(win);
     mvwprintw(win, line, column, text);
-    box(float_input_window, 0, 0);
+    wrefresh(win);
+    box(win, 0, 0);
+    wrefresh(win);
 }
 
 /*!
@@ -149,11 +154,25 @@ void set_hysteresis()
  */
 void setup_input_menu()
 {
-    float_input_window = newwin(INPUT_FIELD_HEIGHT, DISPLAY_WIDTH, MENU_HEIGHT + 6, HEADER_X);
-    setup_window_title(float_input_window, "Input do Usuário");
+    float_input_window = newwin(INPUT_FIELD_HEIGHT, DISPLAY_WIDTH, MENU_HEIGHT + HEADER_Y, HEADER_X);
+    setup_window_title(float_input_window, "Keyboard Inputs");
     keypad(float_input_window, TRUE);
     box(float_input_window, 0, 0);
     wrefresh(float_input_window);
+}
+
+/*!
+ * @brief Function used to setup the system status area.
+ *
+ * @param[out] display    :   Display window with system variables information.
+ *
+ */
+void setup_system_status()
+{
+    system_status_window = newwin(SYSTEM_STATUS_HEIGHT, COLS, 0, 0);
+    setup_window_title(system_status_window, "System Data Values");
+    box(system_status_window, 0, 0);
+    wrefresh(system_status_window);
 }
 
 /*!
@@ -190,7 +209,7 @@ void setup_iterative_menu()
     /* Set menu mark to the string " * " */
     set_menu_mark(selection_menu, " * ");
 
-    setup_window_title(main_menu_window, "Definição de Váriáveis do Sistema");
+    setup_window_title(main_menu_window, "Definition of System Variables");
 
     /* Post the menu */
     post_menu(selection_menu);
@@ -229,12 +248,50 @@ void setup_iterative_menu()
                 read_float(float_input_window, " Type the hysteresis value >> ");
                 set_hysteresis();
             }
-            move(8, 1);
+            move(13, 1);
             pos_menu_cursor(selection_menu);
             break;
         }
         wrefresh(main_menu_window);
         refresh();
+    }
+}
+
+/*!
+ * @brief Function used to display the system variables values.
+ *
+ * @param[out] display    :   Display system variables values into screen.
+ *
+ */
+void update_system_status_window()
+{
+    char external_temperature_str[40], internal_temperature_str[40], reference_temperature_str[40];
+    char reference_temperature_type_str[50];
+    char system_hysteresis_str[40];
+
+    while(1) {
+        if(system_display_value->reference_temperature_type == IS_POTENTIOMETER_REFERENCE) {
+            sprintf(reference_temperature_type_str, "Reference temperature origin: POTENTIOMETER.");
+        }
+        else {
+            sprintf(reference_temperature_type_str, "Reference temperature origin: KEYBOARD.");
+        }
+        sprintf(reference_temperature_str, "Reference temperature: %.2f °C.",
+            system_display_value->reference_temperature);
+        sprintf(internal_temperature_str, "Internal temperature: %.2f °C.",
+            system_display_value->internal_temperature);
+        sprintf(external_temperature_str, "External temperature: %.2f °C.",
+            system_display_value->external_temperature);
+        sprintf(system_hysteresis_str, "System hysteresis: %.2f °C.",
+            system_display_value->hysteresis);
+
+        display_text(system_status_window, 3, 2, reference_temperature_type_str);
+        display_text(system_status_window, 4, 2, reference_temperature_str);
+        display_text(system_status_window, 5, 2, internal_temperature_str);
+        display_text(system_status_window, 6, 2, external_temperature_str);
+        display_text(system_status_window, 7, 2, system_hysteresis_str);
+        wrefresh(system_status_window);
+        usleep(500000);
     }
 }
 
@@ -246,6 +303,16 @@ void *setup_menu_windows()
     while(1) {
         setup_input_menu();
         setup_iterative_menu();
+    }
+}
+
+/*!
+ * @brief Closure function to setup_system_status and update_system_status_window. (thread)
+ */
+void* setup_system_status_interface() {
+    while(1) {
+        setup_system_status();
+        update_system_status_window();
     }
 }
 
